@@ -15,6 +15,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import com.agiotabank.components.Navegador
 import com.agiotabank.screen.HomeScreen
+import com.agiotabank.screen.LoginScreen
+import com.agiotabank.screen.SignInScreen
 import com.agiotabank.ui.theme.AgiotaBankTheme
 
 class MainActivity : ComponentActivity() {
@@ -34,17 +36,25 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun AgiotaApp() {
-    var tela by remember { mutableStateOf(1) }
+    var telaAtual by remember { mutableStateOf("signin") }
+    var telaNavegador by remember { mutableStateOf(1) }
 
-    Column(modifier = Modifier.fillMaxSize()) {
-        Box(modifier = Modifier.weight(1f).fillMaxSize()) {
-            when (tela) {
-                1 -> HomeScreen()
+
+    when (telaAtual) {
+        "signin" -> SignInScreen(onSignIn = { telaAtual = "login" })
+        "login" -> LoginScreen(onLogin = { telaAtual = "home" }, onNavigateToSignIn = { telaAtual = "signin"})
+        "home" -> {
+            Column(modifier = Modifier.fillMaxSize()) {
+                Box(modifier = Modifier.weight(1f).fillMaxSize()) {
+                    when (telaNavegador) {
+                        1 -> HomeScreen()
+                    }
+                }
+                Navegador(
+                    selected = telaNavegador,
+                    onSelect = { telaNavegador = it }
+                )
             }
         }
-        Navegador(
-            selected = tela,
-            onSelect = { tela = it }
-        )
     }
 }
