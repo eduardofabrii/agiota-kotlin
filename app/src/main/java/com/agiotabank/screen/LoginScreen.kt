@@ -10,17 +10,15 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.agiotabank.components.AuthInputField
+import com.agiotabank.components.PasswordInputField
 import com.agiotabank.ui.theme.DarkBackground
 import com.agiotabank.ui.theme.LightBlue
 import com.agiotabank.ui.theme.TextPrimary
-import com.agiotabank.ui.theme.TextSecondary
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginScreen(onLogin: () -> Unit, onNavigateToSignIn: () -> Unit) {
     var email by remember { mutableStateOf("") }
@@ -38,46 +36,21 @@ fun LoginScreen(onLogin: () -> Unit, onNavigateToSignIn: () -> Unit) {
         Text("Login", fontSize = 28.sp, fontWeight = FontWeight.Bold, color = TextPrimary)
         Spacer(modifier = Modifier.height(48.dp))
 
-        OutlinedTextField(
+        AuthInputField(
             value = email,
             onValueChange = { email = it },
-            label = { Text("E-mail") },
-            leadingIcon = { Icon(Icons.Default.Email, contentDescription = null, tint = TextSecondary) },
-            modifier = Modifier.fillMaxWidth(),
-            isError = attemptSubmit && email.isBlank(),
-            colors = TextFieldDefaults.colors(
-                focusedTextColor = TextPrimary,
-                unfocusedTextColor = TextPrimary,
-                cursorColor = LightBlue,
-                focusedContainerColor = Color.Transparent,
-                unfocusedContainerColor = Color.Transparent,
-                focusedIndicatorColor = LightBlue,
-                unfocusedIndicatorColor = TextSecondary,
-                focusedLabelColor = LightBlue,
-                unfocusedLabelColor = TextSecondary,
-            )
+            label = "E-mail",
+            leadingIcon = Icons.Default.Email,
+            isError = attemptSubmit && email.isBlank()
         )
         Spacer(modifier = Modifier.height(16.dp))
 
-        OutlinedTextField(
+        PasswordInputField(
             value = senha,
             onValueChange = { senha = it },
-            label = { Text("Senha") },
-            leadingIcon = { Icon(Icons.Default.Lock, contentDescription = null, tint = TextSecondary) },
-            visualTransformation = PasswordVisualTransformation(),
-            modifier = Modifier.fillMaxWidth(),
-            isError = attemptSubmit && senha.isBlank(),
-            colors = TextFieldDefaults.colors(
-                focusedTextColor = TextPrimary,
-                unfocusedTextColor = TextPrimary,
-                cursorColor = LightBlue,
-                focusedContainerColor = Color.Transparent,
-                unfocusedContainerColor = Color.Transparent,
-                focusedIndicatorColor = LightBlue,
-                unfocusedIndicatorColor = TextSecondary,
-                focusedLabelColor = LightBlue,
-                unfocusedLabelColor = TextSecondary,
-            )
+            label = "Senha",
+            leadingIcon = Icons.Default.Lock,
+            isError = attemptSubmit && senha.isBlank()
         )
         Spacer(modifier = Modifier.height(32.dp))
 
