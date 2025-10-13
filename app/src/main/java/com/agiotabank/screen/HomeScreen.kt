@@ -40,7 +40,7 @@ import com.agiotabank.model.Transacao
 import com.agiotabank.ui.theme.*
 
 @Composable
-fun HomeScreen() {
+fun HomeScreen(onOpenCard: () -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -118,7 +118,9 @@ fun HomeScreen() {
                             Text("Fatura atual", color = TextPrimary, fontSize = 12.sp)
                             Text("R$ 563,00", color = TextPrimary, fontSize = 20.sp, fontWeight = FontWeight.SemiBold)
                         }
-                        Icon(Icons.Filled.ChevronRight, null, tint = TextSecondary)
+                        IconButton(onClick = onOpenCard) {
+                            Icon(Icons.Filled.ChevronRight, contentDescription = null, tint = TextSecondary)
+                        }
                     }
                 }
             }
