@@ -17,6 +17,7 @@ import com.agiotabank.components.Navegador
 import com.agiotabank.screen.HomeScreen
 import com.agiotabank.screen.LoginScreen
 import com.agiotabank.screen.SignInScreen
+import com.agiotabank.screen.TransacaoScreen
 import com.agiotabank.ui.theme.AgiotaBankTheme
 
 class MainActivity : ComponentActivity() {
@@ -36,25 +37,52 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun AgiotaApp() {
-    var telaAtual by remember { mutableStateOf("signin") }
-    var telaNavegador by remember { mutableStateOf(1) }
-
+    var telaAtual by remember { mutableStateOf(Telas.SIGNIN) }
 
     when (telaAtual) {
-        "signin" -> SignInScreen(onSignIn = { telaAtual = "login" })
-        "login" -> LoginScreen(onLogin = { telaAtual = "home" }, onNavigateToSignIn = { telaAtual = "signin"})
-        "home" -> {
+        Telas.SIGNIN -> SignInScreen(onSignIn = { telaAtual = Telas.LOGIN })
+        Telas.LOGIN -> LoginScreen(
+            onLogin = { telaAtual = Telas.HOME},
+            onNavigateToSignIn = { telaAtual = Telas.SIGNIN })
+
+        Telas.HOME -> {
             Column(modifier = Modifier.fillMaxSize()) {
-                Box(modifier = Modifier.weight(1f).fillMaxSize()) {
-                    when (telaNavegador) {
-                        1 -> HomeScreen()
-                    }
+                Box(
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxSize()
+                ) {
+                    HomeScreen(onNavigate = { telaAtual = it })
                 }
                 Navegador(
-                    selected = telaNavegador,
-                    onSelect = { telaNavegador = it }
+                    selected = Telas.HOME,
+                    onSelect = { telaAtual = it }
+                )
+            }
+        }
+        Telas.TRANSACAO -> TransacaoScreen(goBack = { telaAtual = Telas.HOME })
+        else -> {
+            Column(modifier = Modifier.fillMaxSize()) {
+                Box(
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxSize()
+                ) {
+                    HomeScreen(onNavigate = { telaAtual = it })
+                }
+                Navegador(
+                    selected = Telas.HOME,
+                    onSelect = { telaAtual = it }
                 )
             }
         }
     }
+}
+
+enum class Telas {
+    SIGNIN,
+    LOGIN,
+    HOME,
+    TRANSACAO,
+    EMPRESTIMO
 }

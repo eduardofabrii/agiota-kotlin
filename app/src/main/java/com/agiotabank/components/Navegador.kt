@@ -9,13 +9,14 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 
 import androidx.compose.runtime.Composable
+import com.agiotabank.Telas
 
 @Composable
-fun Navegador(selected: Int, onSelect: (Int) -> Unit) {
+fun Navegador(selected: Telas, onSelect: (Telas) -> Unit) {
     BottomAppBar {
         NavigationBarItem(
-            selected = selected == 1,
-            onClick = { onSelect(1) },
+            selected = selected == Telas.HOME,
+            onClick = { onSelect(Telas.HOME) },
             icon = {
                 Icon(
                     imageVector = Icons.Filled.Home, // Ícone do pacote material.icons
