@@ -25,6 +25,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -34,13 +35,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.agiotabank.Telas
 import com.agiotabank.model.Transacao
 import com.agiotabank.ui.theme.*
 
 @Composable
-fun HomeScreen() {
+@Preview
+fun HomeScreen(onNavigate: (Telas) -> Unit = {}) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -97,7 +101,7 @@ fun HomeScreen() {
 
             item {
                 Row(Modifier.fillMaxWidth(), Arrangement.SpaceBetween) {
-                    ActionButton(Icons.Filled.AccountBalance, "Transferir")  // RF-009, RF-010
+                    ActionButton(Icons.Filled.AccountBalance, "Transferir", onClick = {onNavigate(Telas.TRANSACAO)} )  // RF-009, RF-010
                     ActionButton(Icons.Filled.QrCode, "PIX")  // RF-010, RF-022
                     ActionButton(Icons.Filled.Receipt, "Boletos")  // RF-012
                     ActionButton(Icons.Filled.MoreHoriz, "Mais")
@@ -187,12 +191,18 @@ fun HomeScreen() {
 }
 
 @Composable
-private fun ActionButton(icon: ImageVector, label: String) {
-    Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        Surface(Modifier.size(56.dp), CircleShape, CardBackground) {
-            Box(contentAlignment = Alignment.Center) {
-                Icon(icon, null, tint = TextPrimary, modifier = Modifier.size(24.dp))
-            }
+private fun ActionButton(icon: ImageVector, label: String, onClick: () -> Unit = {}) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        IconButton(
+            onClick = onClick,
+            modifier = Modifier.size(56.dp),
+            shape = CircleShape,
+            colors = IconButtonDefaults.iconButtonColors(containerColor = CardBackground)
+        ) {
+            Icon(icon, null, tint = TextPrimary, modifier = Modifier.size(24.dp))
         }
         Text(label, color = TextSecondary, fontSize = 12.sp)
     }
