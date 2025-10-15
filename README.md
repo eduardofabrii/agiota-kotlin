@@ -14,3 +14,5 @@ Captura das telas:
 ![AgiotaBank](./app/src/main/java/com/agiotabank/docs/tela1.png)
 ![AgiotaBank](./app/src/main/java/com/agiotabank/docs/tela2.png)
 ![AgiotaBank](./app/src/main/java/com/agiotabank/docs/tela3.png)
+![AgiotaBank](./app/src/main/java/com/agiotabank/docs/tela4.png)
+![AgiotaBank](./app/src/main/java/com/agiotabank/docs/tela5.png)
