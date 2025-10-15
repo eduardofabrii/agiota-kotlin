@@ -19,6 +19,7 @@ import com.agiotabank.screen.LoginScreen
 import com.agiotabank.screen.SignInScreen
 import com.agiotabank.screen.TransacaoScreen
 import com.agiotabank.ui.theme.AgiotaBankTheme
+import com.agiotabank.screen.CardScreen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -61,6 +62,19 @@ fun AgiotaApp() {
             }
         }
         Telas.TRANSACAO -> TransacaoScreen(goBack = { telaAtual = Telas.HOME })
+        Telas.CARTOES -> Column(modifier = Modifier.fillMaxSize()) {
+            Box(
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxSize()
+            ) {
+                CardScreen()
+            }
+            Navegador(
+                selected = Telas.HOME,
+                onSelect = { telaAtual = it }
+            )
+        }
         else -> {
             Column(modifier = Modifier.fillMaxSize()) {
                 Box(
@@ -84,5 +98,6 @@ enum class Telas {
     LOGIN,
     HOME,
     TRANSACAO,
-    EMPRESTIMO
+    EMPRESTIMO,
+    CARTOES
 }

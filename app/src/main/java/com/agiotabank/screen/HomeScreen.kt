@@ -43,7 +43,6 @@ import com.agiotabank.model.Transacao
 import com.agiotabank.ui.theme.*
 
 @Composable
-@Preview
 fun HomeScreen(onNavigate: (Telas) -> Unit = {}) {
     Column(
         modifier = Modifier
@@ -122,7 +121,9 @@ fun HomeScreen(onNavigate: (Telas) -> Unit = {}) {
                             Text("Fatura atual", color = TextPrimary, fontSize = 12.sp)
                             Text("R$ 563,00", color = TextPrimary, fontSize = 20.sp, fontWeight = FontWeight.SemiBold)
                         }
-                        Icon(Icons.Filled.ChevronRight, null, tint = TextSecondary)
+                        IconButton(onClick = { onNavigate(Telas.CARTOES) }) {  // RF-015
+                            Icon(Icons.Filled.ChevronRight, contentDescription = null, tint = TextSecondary)
+                        }
                     }
                 }
             }
