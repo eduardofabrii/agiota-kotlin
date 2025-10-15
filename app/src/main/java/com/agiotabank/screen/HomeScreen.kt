@@ -121,7 +121,7 @@ fun HomeScreen(onNavigate: (Telas) -> Unit = {}) {
                             Text("Fatura atual", color = TextPrimary, fontSize = 12.sp)
                             Text("R$ 563,00", color = TextPrimary, fontSize = 20.sp, fontWeight = FontWeight.SemiBold)
                         }
-                        IconButton(onClick = onOpenCard) {
+                        IconButton(onClick = { onNavigate(Telas.CARTOES) }) {  // RF-015
                             Icon(Icons.Filled.ChevronRight, contentDescription = null, tint = TextSecondary)
                         }
                     }
