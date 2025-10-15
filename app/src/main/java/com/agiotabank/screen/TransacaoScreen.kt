@@ -59,7 +59,6 @@ import com.agiotabank.ui.theme.TextSecondary
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-@Preview
 fun TransacaoScreen(goBack: () -> Unit = {}) {
     Scaffold(
         modifier = Modifier
@@ -257,8 +256,8 @@ fun TransacaoScreen(goBack: () -> Unit = {}) {
                                 focusedContainerColor = MaterialTheme.colorScheme.surface,
                             ),
                             label = { Text("Agência") },
-                            modifier = Modifier.fillMaxWidth()
-
+                            modifier = Modifier.fillMaxWidth(),
+                            singleLine = true
                         )
                         Spacer(Modifier.height(8.dp))
                         var conta by remember { mutableStateOf("") }
@@ -270,8 +269,8 @@ fun TransacaoScreen(goBack: () -> Unit = {}) {
                                 focusedContainerColor = MaterialTheme.colorScheme.surface,
                             ),
                             label = { Text("Conta") },
-                            modifier = Modifier.fillMaxWidth()
-
+                            modifier = Modifier.fillMaxWidth(),
+                            singleLine = true
                         )
 
                     }
@@ -287,5 +286,14 @@ fun TransacaoScreen(goBack: () -> Unit = {}) {
                 }
             }
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun
+TransacaoScreenPreview() {
+    AgiotaBankTheme(darkTheme = true, dynamicColor = false) {
+        TransacaoScreen()
     }
 }
