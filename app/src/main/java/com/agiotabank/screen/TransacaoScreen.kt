@@ -4,7 +4,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
@@ -16,17 +15,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -51,7 +47,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.agiotabank.ui.theme.AgiotaBankTheme
 import com.agiotabank.ui.theme.DarkBackground
 import com.agiotabank.ui.theme.LightBlue
 import com.agiotabank.ui.theme.TextPrimary
@@ -69,7 +64,6 @@ fun TransacaoScreen(goBack: () -> Unit = {}) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(DarkBackground)
                     .padding(horizontal = 16.dp, vertical = 12.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
@@ -79,8 +73,7 @@ fun TransacaoScreen(goBack: () -> Unit = {}) {
                 ) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.ArrowBack, // Ícone do pacote material.icons
-                        contentDescription = "Voltar",
-                        tint = TextPrimary
+                        contentDescription = "Voltar"
                     )
                 }
                 Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
@@ -97,7 +90,7 @@ fun TransacaoScreen(goBack: () -> Unit = {}) {
                             .background(LightBlue),
                         contentAlignment = Alignment.Center
                     ) {
-                        Text("C", color = TextPrimary, fontWeight = FontWeight.Bold)
+                        Text("C", fontWeight = FontWeight.Bold)
                     }
                 }
             }
@@ -111,21 +104,19 @@ fun TransacaoScreen(goBack: () -> Unit = {}) {
             verticalArrangement = Arrangement.spacedBy(24.dp)
         ) {
             Column {
-                Text("Saldo disponível", color = TextSecondary, fontSize = 14.sp)
+                Text("Saldo disponível", fontSize = 14.sp)
                 Spacer(Modifier.height(4.dp))
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     var isHidden by remember { mutableStateOf(false) }
                     if (isHidden) {
                         Text(
                             "R$ ----,--",
-                            color = TextPrimary,
                             fontSize = 28.sp,
                             fontWeight = FontWeight.SemiBold
                         )
                     } else {
                         Text(
                             "R$ 3.363,32",
-                            color = TextPrimary,
                             fontSize = 28.sp,
                             fontWeight = FontWeight.SemiBold
                         )
@@ -151,7 +142,6 @@ fun TransacaoScreen(goBack: () -> Unit = {}) {
                 Card(
                     modifier = Modifier
                         .fillMaxWidth(),
-                    colors = CardDefaults.cardColors(MaterialTheme.colorScheme.surface),
                     elevation = CardDefaults.cardElevation(4.dp),
                     shape = RoundedCornerShape(12)
                 ) {
@@ -171,10 +161,6 @@ fun TransacaoScreen(goBack: () -> Unit = {}) {
                                 value = "$selected - ${options[selected]}",
                                 onValueChange = {},
                                 readOnly = true,
-                                colors = TextFieldDefaults.colors(
-                                    unfocusedContainerColor = MaterialTheme.colorScheme.surface,
-                                    focusedContainerColor = MaterialTheme.colorScheme.surface,
-                                ),
                                 label = { Text("Banco") },
                                 trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expandido) },
                                 modifier = Modifier.menuAnchor().fillMaxWidth()
@@ -184,14 +170,12 @@ fun TransacaoScreen(goBack: () -> Unit = {}) {
                                 onDismissRequest = { expandido = false },
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .background(MaterialTheme.colorScheme.surface)
                             ) {
                                 options.keys.forEach { banco ->
                                     androidx.compose.material3.DropdownMenuItem(
                                         text = {
                                             Text(
                                                 text = "$banco - ${options[banco]}",
-                                                color = TextPrimary
                                             )
                                         },
                                         onClick = {
@@ -214,10 +198,6 @@ fun TransacaoScreen(goBack: () -> Unit = {}) {
                                 value = tipo,
                                 onValueChange = {},
                                 readOnly = true,
-                                colors = TextFieldDefaults.colors(
-                                    unfocusedContainerColor = MaterialTheme.colorScheme.surface,
-                                    focusedContainerColor = MaterialTheme.colorScheme.surface,
-                                ),
                                 label = { Text("Tipo de conta") },
                                 trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(tipoExpandido) },
                                 modifier = Modifier.menuAnchor().fillMaxWidth()
@@ -227,14 +207,12 @@ fun TransacaoScreen(goBack: () -> Unit = {}) {
                                 onDismissRequest = { tipoExpandido = false },
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .background(MaterialTheme.colorScheme.surface)
                             ) {
                                 tipos.forEach { tipoConta ->
                                     androidx.compose.material3.DropdownMenuItem(
                                         text = {
                                             Text(
                                                 text = tipoConta,
-                                                color = TextPrimary
                                             )
                                         },
                                         onClick = {
@@ -251,10 +229,6 @@ fun TransacaoScreen(goBack: () -> Unit = {}) {
                         TextField(
                             value = agencia,
                             onValueChange = {agencia = it},
-                            colors = TextFieldDefaults.colors(
-                                unfocusedContainerColor = MaterialTheme.colorScheme.surface,
-                                focusedContainerColor = MaterialTheme.colorScheme.surface,
-                            ),
                             label = { Text("Agência") },
                             modifier = Modifier.fillMaxWidth(),
                             singleLine = true
@@ -264,10 +238,6 @@ fun TransacaoScreen(goBack: () -> Unit = {}) {
                         TextField(
                             value = conta,
                             onValueChange = {conta = it},
-                            colors = TextFieldDefaults.colors(
-                                unfocusedContainerColor = MaterialTheme.colorScheme.surface,
-                                focusedContainerColor = MaterialTheme.colorScheme.surface,
-                            ),
                             label = { Text("Conta") },
                             modifier = Modifier.fillMaxWidth(),
                             singleLine = true

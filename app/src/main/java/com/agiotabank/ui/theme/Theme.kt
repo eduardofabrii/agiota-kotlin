@@ -23,6 +23,18 @@ private val DarkColorScheme = darkColorScheme(
     onTertiary = TextPrimary,
     onBackground = TextPrimary,
     onSurface = TextPrimary,
+    primaryContainer = LightBlue,
+    onPrimaryContainer = Color.White,
+    secondaryContainer = AccentBlue,
+    onSecondaryContainer = Color.White,
+    tertiaryContainer = LightBlue,
+    onTertiaryContainer = Color.White,
+    surfaceContainer = CardBackground,
+    surfaceContainerLow = DarkBackground,
+    surfaceContainerLowest = DarkBackground,
+    surfaceContainerHigh = CardBackground,
+    surfaceContainerHighest = CardBackground,
+
 )
 
 private val LightColorScheme = lightColorScheme(
