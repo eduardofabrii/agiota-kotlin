@@ -26,15 +26,15 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuAnchorType
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -47,7 +47,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.agiotabank.ui.theme.DarkBackground
+import com.agiotabank.ui.theme.AgiotaBankTheme
 import com.agiotabank.ui.theme.LightBlue
 import com.agiotabank.ui.theme.TextPrimary
 import com.agiotabank.ui.theme.TextSecondary
@@ -137,33 +137,42 @@ fun TransacaoScreen(goBack: () -> Unit = {}) {
             }
             Text("Dados de destino")
 
-            Column (modifier = Modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.SpaceBetween) {
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.SpaceBetween
+            ) {
                 Card(
                     modifier = Modifier
                         .fillMaxWidth(),
                     elevation = CardDefaults.cardElevation(4.dp),
-                    shape = RoundedCornerShape(12)
+                    shape = RoundedCornerShape(12.dp)
                 ) {
-                    val options = mapOf<String, String>(
+                    val options = mapOf(
                         "Agibank S.A." to "019",
                         "Banco do Brasil" to "001",
                         "Banco Inter S.A." to "077",
                     )
                     var selected by remember { mutableStateOf(options.keys.first()) }
                     var expandido by remember { mutableStateOf(false) }
-                    Column(modifier = Modifier.fillMaxWidth().padding(20.dp)){
+                    Column(modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(20.dp)) {
                         ExposedDropdownMenuBox(
                             expanded = expandido,
                             onExpandedChange = { expandido = !expandido },
                         ) {
-                            TextField(
+                            OutlinedTextField(
                                 value = "$selected - ${options[selected]}",
                                 onValueChange = {},
                                 readOnly = true,
                                 label = { Text("Banco") },
                                 trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expandido) },
-                                modifier = Modifier.menuAnchor().fillMaxWidth()
+                                modifier = Modifier
+                                    .menuAnchor(
+                                        ExposedDropdownMenuAnchorType.PrimaryNotEditable,
+                                        true
+                                    )
+                                    .fillMaxWidth()
                             )
                             ExposedDropdownMenu(
                                 expanded = expandido,
@@ -194,13 +203,22 @@ fun TransacaoScreen(goBack: () -> Unit = {}) {
                             expanded = tipoExpandido,
                             onExpandedChange = { tipoExpandido = !tipoExpandido },
                         ) {
-                            TextField(
+                            OutlinedTextField(
                                 value = tipo,
                                 onValueChange = {},
                                 readOnly = true,
                                 label = { Text("Tipo de conta") },
-                                trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(tipoExpandido) },
-                                modifier = Modifier.menuAnchor().fillMaxWidth()
+                                trailingIcon = {
+                                    ExposedDropdownMenuDefaults.TrailingIcon(
+                                        tipoExpandido
+                                    )
+                                },
+                                modifier = Modifier
+                                    .menuAnchor(
+                                        ExposedDropdownMenuAnchorType.PrimaryNotEditable,
+                                        true
+                                    )
+                                    .fillMaxWidth()
                             )
                             ExposedDropdownMenu(
                                 expanded = tipoExpandido,
@@ -226,18 +244,18 @@ fun TransacaoScreen(goBack: () -> Unit = {}) {
 
                         Spacer(Modifier.height(8.dp))
                         var agencia by remember { mutableStateOf("") }
-                        TextField(
+                        OutlinedTextField(
                             value = agencia,
-                            onValueChange = {agencia = it},
+                            onValueChange = { agencia = it },
                             label = { Text("Agência") },
                             modifier = Modifier.fillMaxWidth(),
                             singleLine = true
                         )
                         Spacer(Modifier.height(8.dp))
                         var conta by remember { mutableStateOf("") }
-                        TextField(
+                        OutlinedTextField(
                             value = conta,
-                            onValueChange = {conta = it},
+                            onValueChange = { conta = it },
                             label = { Text("Conta") },
                             modifier = Modifier.fillMaxWidth(),
                             singleLine = true
@@ -250,7 +268,9 @@ fun TransacaoScreen(goBack: () -> Unit = {}) {
                 Button(
                     onClick = {},
                     shape = RoundedCornerShape(12.dp),
-                    modifier = Modifier.fillMaxWidth().height(50.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(50.dp),
                 ) {
                     Text("Continuar", fontSize = 18.sp)
                 }
@@ -262,7 +282,7 @@ fun TransacaoScreen(goBack: () -> Unit = {}) {
 @Preview(showBackground = true)
 @Composable
 fun
-TransacaoScreenPreview() {
+        TransacaoScreenPreview() {
     AgiotaBankTheme(darkTheme = true, dynamicColor = false) {
         TransacaoScreen()
     }
