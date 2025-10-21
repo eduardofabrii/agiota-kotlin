@@ -26,6 +26,8 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -38,48 +40,54 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.agiotabank.Telas
+import com.agiotabank.components.Telas
 import com.agiotabank.model.Transacao
 import com.agiotabank.ui.theme.*
 
 @Composable
-fun HomeScreen(onNavigate: (Telas) -> Unit = {}) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(DarkBackground)
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(DarkBackground)
-                .padding(horizontal = 16.dp, vertical = 12.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(
-                "Olá, Cliente",
-                fontSize = 20.sp,
-                color = TextPrimary,
-                fontWeight = FontWeight.Medium
-            )
-            Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-                IconButton(onClick = { /* RF-020: Alertas */ }) {
-                    Icon(Icons.Filled.Notifications, null, tint = TextPrimary)
-                }
-                IconButton(onClick = { /* RF-019: Histórico de acessos */ }) {
-                    Icon(Icons.Filled.History, null, tint = TextPrimary)
-                }
-                Box(
-                    Modifier.size(32.dp).clip(CircleShape).background(LightBlue),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text("C", color = TextPrimary, fontWeight = FontWeight.Bold)
+fun HomeScreen(onNavigate: (Telas) -> Unit = {}, bottomBar: @Composable () -> Unit = {}) {
+    Scaffold(
+        topBar = {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 12.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    "Olá, Cliente",
+                    fontSize = 20.sp,
+                    color = TextPrimary,
+                    fontWeight = FontWeight.Medium
+                )
+                Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                    IconButton(onClick = { /* RF-020: Alertas */ }) {
+                        Icon(Icons.Filled.Notifications, null, tint = TextPrimary)
+                    }
+                    IconButton(onClick = { /* RF-019: Histórico de acessos */ }) {
+                        Icon(Icons.Filled.History, null, tint = TextPrimary)
+                    }
+                    Box(
+                        Modifier.size(32.dp).clip(CircleShape).background(LightBlue),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text("C", color = TextPrimary, fontWeight = FontWeight.Bold)
+                    }
                 }
             }
-        }
-
+        },
+        bottomBar = bottomBar,
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background)
+            .padding(WindowInsets.statusBars.asPaddingValues())
+    ) {
+        contentPadding ->
         LazyColumn(
+            Modifier
+                .fillMaxSize()
+                .padding(contentPadding),
             contentPadding = PaddingValues(20.dp),
             verticalArrangement = Arrangement.spacedBy(24.dp)
         ) {

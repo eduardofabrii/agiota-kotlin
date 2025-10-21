@@ -38,66 +38,6 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun AgiotaApp() {
-    var telaAtual by remember { mutableStateOf(Telas.SIGNIN) }
-
-    when (telaAtual) {
-        Telas.SIGNIN -> SignInScreen(onSignIn = { telaAtual = Telas.LOGIN })
-        Telas.LOGIN -> LoginScreen(
-            onLogin = { telaAtual = Telas.HOME},
-            onNavigateToSignIn = { telaAtual = Telas.SIGNIN })
-
-        Telas.HOME -> {
-            Column(modifier = Modifier.fillMaxSize()) {
-                Box(
-                    modifier = Modifier
-                        .weight(1f)
-                        .fillMaxSize()
-                ) {
-                    HomeScreen(onNavigate = { telaAtual = it })
-                }
-                Navegador(
-                    selected = Telas.HOME,
-                    onSelect = { telaAtual = it }
-                )
-            }
-        }
-        Telas.TRANSACAO -> TransacaoScreen(goBack = { telaAtual = Telas.HOME })
-        Telas.CARTOES -> Column(modifier = Modifier.fillMaxSize()) {
-            Box(
-                modifier = Modifier
-                    .weight(1f)
-                    .fillMaxSize()
-            ) {
-                CardScreen()
-            }
-            Navegador(
-                selected = Telas.HOME,
-                onSelect = { telaAtual = it }
-            )
-        }
-        else -> {
-            Column(modifier = Modifier.fillMaxSize()) {
-                Box(
-                    modifier = Modifier
-                        .weight(1f)
-                        .fillMaxSize()
-                ) {
-                    HomeScreen(onNavigate = { telaAtual = it })
-                }
-                Navegador(
-                    selected = Telas.HOME,
-                    onSelect = { telaAtual = it }
-                )
-            }
-        }
-    }
+    Navegador()
 }
 
-enum class Telas {
-    SIGNIN,
-    LOGIN,
-    HOME,
-    TRANSACAO,
-    EMPRESTIMO,
-    CARTOES
-}

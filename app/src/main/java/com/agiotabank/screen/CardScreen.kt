@@ -1,5 +1,3 @@
-// Coloque como CardScreen.kt no mesmo pacote da HomeScreen.
-
 package com.agiotabank.screen
 
 import android.content.res.Configuration
@@ -8,6 +6,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material.icons.filled.CreditCard
 import androidx.compose.material.icons.filled.Lock
@@ -38,7 +37,7 @@ import androidx.compose.ui.unit.sp
 import com.agiotabank.ui.theme.*
 
 @Composable
-fun CardScreen() {
+fun CardScreen(goBack: () -> Unit = {}) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -53,6 +52,14 @@ fun CardScreen() {
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
+            IconButton(
+                onClick = {  }
+            ) {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.ArrowBack, // Ícone do pacote material.icons
+                    contentDescription = "Voltar"
+                )
+            }
             Text(
                 text = "Cartão",
                 color = TextPrimary,
