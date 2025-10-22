@@ -31,6 +31,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
+import androidx.compose.foundation.clickable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -42,6 +43,7 @@ import com.agiotabank.Telas
 import com.agiotabank.model.Transacao
 import com.agiotabank.ui.theme.*
 
+@Preview
 @Composable
 fun HomeScreen(onNavigate: (Telas) -> Unit = {}) {
     Column(
@@ -71,8 +73,13 @@ fun HomeScreen(onNavigate: (Telas) -> Unit = {}) {
                     Icon(Icons.Filled.History, null, tint = TextPrimary)
                 }
                 Box(
-                    Modifier.size(32.dp).clip(CircleShape).background(LightBlue),
-                    contentAlignment = Alignment.Center
+                    modifier = Modifier
+                        .size(32.dp)
+                        .clip(CircleShape)
+                        .background(LightBlue)
+                        .clickable { onNavigate(Telas.PERFIL) },
+                    contentAlignment = Alignment.Center,
+
                 ) {
                     Text("C", color = TextPrimary, fontWeight = FontWeight.Bold)
                 }
@@ -144,7 +151,8 @@ fun HomeScreen(onNavigate: (Telas) -> Unit = {}) {
                         IconButton(onClick = { /* RF-023: Exportar PDF */ }) {
                             Icon(Icons.Filled.PictureAsPdf, null, tint = LightBlue, modifier = Modifier.size(20.dp))
                         }
-                        TextButton(onClick = { }) {
+                        TextButton(onClick = { onNavigate(Telas.HISTORICO) }) {
+
                             Text("Ver tudo", color = LightBlue, fontSize = 14.sp)
                         }
                     }
