@@ -19,6 +19,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -38,47 +39,51 @@ import com.agiotabank.ui.theme.*
 
 @Composable
 fun CardScreen(goBack: () -> Unit = {}) {
-    Column(
+    Scaffold(
         modifier = Modifier
             .fillMaxSize()
-            .background(DarkBackground)
-    ) {
-        // Top bar simples, alinhado ao seu padrão
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(DarkBackground)
-                .padding(horizontal = 16.dp, vertical = 12.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            IconButton(
-                onClick = {  }
+            .background(MaterialTheme.colorScheme.background)
+            .padding(WindowInsets.statusBars.asPaddingValues()),
+        topBar = {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 12.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Icon(
-                    imageVector = Icons.AutoMirrored.Filled.ArrowBack, // Ícone do pacote material.icons
-                    contentDescription = "Voltar"
+                IconButton(
+                    onClick = { goBack() }
+                ) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack, // Ícone do pacote material.icons
+                        contentDescription = "Voltar"
+                    )
+                }
+                Text(
+                    text = "Cartão",
+                    color = TextPrimary,
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Medium
                 )
-            }
-            Text(
-                text = "Cartão",
-                color = TextPrimary,
-                fontSize = 20.sp,
-                fontWeight = FontWeight.Medium
-            )
-            Row(horizontalArrangement = Arrangement.spacedBy(4.dp), verticalAlignment = Alignment.CenterVertically) {
-                IconButton(onClick = { }) { Icon(Icons.Filled.Settings, null, tint = TextPrimary) }
-                Surface(Modifier.size(32.dp), shape = CircleShape, color = LightBlue) {
-                    Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                        Text("C", color = TextPrimary, fontWeight = FontWeight.Bold)
+                Row(horizontalArrangement = Arrangement.spacedBy(4.dp), verticalAlignment = Alignment.CenterVertically) {
+                    IconButton(onClick = { }) { Icon(Icons.Filled.Settings, null, tint = TextPrimary) }
+                    Surface(Modifier.size(32.dp), shape = CircleShape, color = LightBlue) {
+                        Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                            Text("C", color = TextPrimary, fontWeight = FontWeight.Bold)
+                        }
                     }
                 }
             }
         }
+    ) {
+        contentPadding ->
+        // Top bar simples, alinhado ao seu padrão
 
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .padding(contentPadding)
                 .padding(20.dp),
             verticalArrangement = Arrangement.spacedBy(24.dp)
         ) {
@@ -232,19 +237,10 @@ private fun SmallInfoCard(title: String, subtitle: String, modifier: Modifier = 
     }
 }
 
-// Pré-visualizações opcionais com seu tema
-@Preview(name = "Card Screen — Light", showBackground = true)
-@Composable
-private fun PreviewCardLight() {
-    AgiotaBankTheme(darkTheme = false) {
-        CardScreen()
-    }
-}
-
 @Preview(name = "Card Screen — Dark", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 private fun PreviewCardDark() {
-    AgiotaBankTheme(darkTheme = true) {
+    AgiotaBankTheme(darkTheme = true, dynamicColor = false) {
         CardScreen()
     }
 }

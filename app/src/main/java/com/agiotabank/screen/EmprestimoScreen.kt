@@ -3,8 +3,10 @@ package com.agiotabank.screen
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.*
@@ -17,6 +19,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.agiotabank.ui.theme.AgiotaBankTheme
 import com.agiotabank.ui.theme.CardBackground
 import com.agiotabank.ui.theme.DarkBackground
 import com.agiotabank.ui.theme.LightBlue
@@ -27,9 +30,9 @@ import java.util.Locale
 import kotlin.math.pow
 import kotlin.math.roundToInt
 
-@Preview
 @Composable
 fun EmprestimoScreen(onVoltar: () -> Unit = {}) {
+    val scrollState = rememberScrollState()
     val limiteMaximo = 5000f
     val opcoesParcelas = listOf(2, 3, 6, 9, 12)
 
@@ -53,15 +56,13 @@ fun EmprestimoScreen(onVoltar: () -> Unit = {}) {
     }
 
     Scaffold(
-        modifier = Modifier.fillMaxSize(),
-        containerColor = DarkBackground,
+        modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background).padding(WindowInsets.statusBars.asPaddingValues()),
         topBar = {
             TopAppBar(
                 title = {
                     Text(
                         "Empréstimo",
                         fontSize = 20.sp,
-                        color = TextPrimary,
                         fontWeight = FontWeight.Medium,
                         modifier = Modifier.fillMaxWidth(),
                         textAlign = TextAlign.Center
@@ -72,7 +73,6 @@ fun EmprestimoScreen(onVoltar: () -> Unit = {}) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = "Voltar",
-                            tint = TextPrimary
                         )
                     }
                 },
@@ -80,7 +80,7 @@ fun EmprestimoScreen(onVoltar: () -> Unit = {}) {
                     Spacer(Modifier.size(40.dp))
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = DarkBackground
+                    containerColor = MaterialTheme.colorScheme.background
                 )
             )
         },
@@ -122,7 +122,9 @@ fun EmprestimoScreen(onVoltar: () -> Unit = {}) {
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
-                .padding(20.dp),
+                .verticalScroll(scrollState)
+                .padding(20.dp)
+            ,
         ) {
             Column(
                 verticalArrangement = Arrangement.spacedBy(24.dp)
@@ -309,4 +311,12 @@ private fun SliderBolinha(
             }
         }
     )
+}
+
+@Preview(showBackground = true)
+@Composable
+fun EmprestimoScreenPreview() {
+    AgiotaBankTheme(darkTheme = true, dynamicColor = false) {
+        EmprestimoScreen()
+    }
 }

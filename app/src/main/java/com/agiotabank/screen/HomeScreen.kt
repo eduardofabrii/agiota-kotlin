@@ -1,6 +1,7 @@
 package com.agiotabank.screen
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -140,7 +141,7 @@ fun HomeScreen(onNavigate: (Telas) -> Unit = {}, bottomBar: @Composable () -> Un
             item {
                 Row(Modifier.fillMaxWidth(), Arrangement.spacedBy(12.dp)) {
                     SmallCard(Icons.Filled.TrendingUp, "Investimentos", "R$ 7.800", Modifier.weight(1f))  // RF-017
-                    SmallCard(Icons.Filled.Savings, "Empréstimo", "Até R$ 5.000", Modifier.weight(1f))  // RF-016
+                    SmallCard(Icons.Filled.Savings, "Empréstimo", "Até R$ 5.000", Modifier.weight(1f).clickable(onClick = {onNavigate(Telas.EMPRESTIMO)}))  // RF-016
                 }
             }
 
