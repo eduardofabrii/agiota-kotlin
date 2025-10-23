@@ -2,7 +2,21 @@ package com.agiotabank.screen
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
@@ -23,7 +37,6 @@ import androidx.compose.material.icons.filled.SwapHoriz
 import androidx.compose.material.icons.filled.TrendingUp
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
@@ -34,17 +47,19 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
-import androidx.compose.foundation.clickable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.agiotabank.components.Telas
 import com.agiotabank.model.Transacao
-import com.agiotabank.ui.theme.*
+import com.agiotabank.ui.theme.CardBackground
+import com.agiotabank.ui.theme.Green
+import com.agiotabank.ui.theme.LightBlue
+import com.agiotabank.ui.theme.TextPrimary
+import com.agiotabank.ui.theme.TextSecondary
 
 @Composable
 fun HomeScreen(onNavigate: (Telas) -> Unit = {}, bottomBar: @Composable () -> Unit = {}) {
@@ -74,7 +89,7 @@ fun HomeScreen(onNavigate: (Telas) -> Unit = {}, bottomBar: @Composable () -> Un
                             .size(32.dp)
                             .clip(CircleShape)
                             .background(LightBlue)
-                            .clickable { onNavigate(com.agiotabank.Telas.PERFIL) },
+                            .clickable { onNavigate(Telas.PERFIL) },
                         contentAlignment = Alignment.Center,
 
                         ) {

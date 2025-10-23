@@ -11,11 +11,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.tooling.preview.Preview
 import com.agiotabank.screen.CardScreen
 import com.agiotabank.screen.EmprestimoScreen
+import com.agiotabank.screen.HistoricoScreen
 import com.agiotabank.screen.HomeScreen
 import com.agiotabank.screen.LoginScreen
+import com.agiotabank.screen.PerfilScreen
 import com.agiotabank.screen.SignInScreen
 import com.agiotabank.screen.TransacaoScreen
 
@@ -25,7 +26,9 @@ enum class Telas {
     HOME,
     TRANSACAO,
     EMPRESTIMO,
-    CARTOES
+    CARTOES,
+    HISTORICO,
+    PERFIL
 }
 @Composable
 fun Navegador() {
@@ -42,6 +45,11 @@ fun Navegador() {
         Telas.TRANSACAO -> TransacaoScreen(goBack = { telaAtual = Telas.HOME })
         Telas.CARTOES -> CardScreen({ telaAtual = Telas.HOME })
         Telas.EMPRESTIMO -> EmprestimoScreen { telaAtual = Telas.HOME }
+        Telas.HISTORICO -> HistoricoScreen(goBack = { telaAtual = Telas.HOME })
+        Telas.PERFIL -> PerfilScreen(
+            goBack = { telaAtual = Telas.HOME },
+            onSair = { telaAtual = Telas.LOGIN }
+        )
         else -> HomeScreen(onNavigate = { telaAtual = it })
         }
 }
