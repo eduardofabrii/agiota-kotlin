@@ -13,14 +13,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.tooling.preview.Preview
 import com.agiotabank.components.AuthInputField
 import com.agiotabank.components.PasswordInputField
 import com.agiotabank.ui.theme.DarkBackground
 import com.agiotabank.ui.theme.LightBlue
 import com.agiotabank.ui.theme.TextPrimary
 
+@Preview
 @Composable
-fun LoginScreen(onLogin: () -> Unit, onNavigateToSignIn: () -> Unit) {
+fun LoginScreen(
+    onLogin: () -> Unit = {},
+    onNavigateToSignIn: () -> Unit = {}
+) {
     var email by remember { mutableStateOf("") }
     var senha by remember { mutableStateOf("") }
     var attemptSubmit by remember { mutableStateOf(false) }

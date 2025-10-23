@@ -17,9 +17,11 @@ import com.agiotabank.components.Navegador
 import com.agiotabank.screen.HomeScreen
 import com.agiotabank.screen.LoginScreen
 import com.agiotabank.screen.SignInScreen
+import com.agiotabank.screen.HistoricoScreen
 import com.agiotabank.screen.TransacaoScreen
 import com.agiotabank.ui.theme.AgiotaBankTheme
 import com.agiotabank.screen.CardScreen
+import com.agiotabank.screen.PerfilScreen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
