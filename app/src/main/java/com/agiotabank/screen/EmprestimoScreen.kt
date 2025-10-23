@@ -99,7 +99,6 @@ fun EmprestimoScreen(onVoltar: () -> Unit = {}) {
                         Text("Total a pagar", color = TextSecondary, fontSize = 14.sp)
                         Text(
                             formatadorMoeda.format(totalPagar),
-                            color = TextPrimary,
                             fontSize = 20.sp,
                             fontWeight = FontWeight.Bold
                         )

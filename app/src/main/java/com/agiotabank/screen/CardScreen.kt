@@ -62,7 +62,6 @@ fun CardScreen(goBack: () -> Unit = {}) {
                 }
                 Text(
                     text = "Cartão",
-                    color = TextPrimary,
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Medium
                 )
@@ -70,7 +69,7 @@ fun CardScreen(goBack: () -> Unit = {}) {
                     IconButton(onClick = { }) { Icon(Icons.Filled.Settings, null, tint = TextPrimary) }
                     Surface(Modifier.size(32.dp), shape = CircleShape, color = LightBlue) {
                         Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                            Text("C", color = TextPrimary, fontWeight = FontWeight.Bold)
+                            Text("C", fontWeight = FontWeight.Bold)
                         }
                     }
                 }
@@ -92,8 +91,7 @@ fun CardScreen(goBack: () -> Unit = {}) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .aspectRatio(1.6f),
-                shape = RoundedCornerShape(16.dp),
-                colors = CardDefaults.cardColors(containerColor = CardBackground)
+                shape = RoundedCornerShape(16.dp)
             ) {
                 Box(Modifier.fillMaxSize().padding(18.dp)) {
                     // Fundo com "brilho" em gradiente usando apenas as cores do tema
@@ -124,7 +122,6 @@ fun CardScreen(goBack: () -> Unit = {}) {
                         Spacer(Modifier.height(10.dp))
                         Text(
                             text = "nome do tio",
-                            color = TextPrimary,
                             fontSize = 13.sp,
                             fontWeight = FontWeight.Medium,
                             maxLines = 1,
@@ -139,7 +136,7 @@ fun CardScreen(goBack: () -> Unit = {}) {
                     ) {
                         Text("Válido até", color = TextSecondary, fontSize = 12.sp)
                         Spacer(Modifier.width(8.dp))
-                        Text("12/28", color = TextPrimary, fontSize = 14.sp, fontWeight = FontWeight.SemiBold)
+                        Text("12/28", fontSize = 14.sp, fontWeight = FontWeight.SemiBold)
                     }
                     Text(
                         text = "crédito • débito",
@@ -162,14 +159,13 @@ fun CardScreen(goBack: () -> Unit = {}) {
             Card(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(12.dp),
-                colors = CardDefaults.cardColors(containerColor = CardBackground)
             ) {
                 Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
                     Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                         Icon(Icons.Filled.CreditCard, null, tint = LightBlue)
                         Text("Fatura atual", color = TextSecondary, fontSize = 13.sp)
                     }
-                    Text("R$ 563,00", color = TextPrimary, fontSize = 22.sp, fontWeight = FontWeight.SemiBold)
+                    Text("R$ 563,00", fontSize = 22.sp, fontWeight = FontWeight.SemiBold)
                     LinearProgressIndicator(
                         progress = { 0.42f },
                         modifier = Modifier.fillMaxWidth(),
@@ -214,7 +210,7 @@ private fun CardNumber(masked: String) {
 @Composable
 private fun CardAction(icon: androidx.compose.ui.graphics.vector.ImageVector, label: String) {
     Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        Surface(Modifier.size(56.dp), shape = CircleShape, color = CardBackground) {
+        Surface(Modifier.size(56.dp), shape = CircleShape) {
             Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 Icon(icon, null, tint = TextPrimary)
             }
@@ -228,10 +224,9 @@ private fun SmallInfoCard(title: String, subtitle: String, modifier: Modifier = 
     Card(
         modifier = modifier,
         shape = RoundedCornerShape(12.dp),
-        colors = CardDefaults.cardColors(containerColor = CardBackground)
     ) {
         Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-            Text(title, color = TextPrimary, fontSize = 14.sp, fontWeight = FontWeight.SemiBold)
+            Text(title, fontSize = 14.sp, fontWeight = FontWeight.SemiBold)
             Text(subtitle, color = TextSecondary, fontSize = 12.sp, maxLines = 2)
         }
     }
