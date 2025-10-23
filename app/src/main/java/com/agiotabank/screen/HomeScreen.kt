@@ -1,7 +1,22 @@
 package com.agiotabank.screen
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
@@ -22,71 +37,78 @@ import androidx.compose.material.icons.filled.SwapHoriz
 import androidx.compose.material.icons.filled.TrendingUp
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
-import androidx.compose.foundation.clickable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.agiotabank.Telas
+import com.agiotabank.components.Telas
 import com.agiotabank.model.Transacao
-import com.agiotabank.ui.theme.*
+import com.agiotabank.ui.theme.CardBackground
+import com.agiotabank.ui.theme.Green
+import com.agiotabank.ui.theme.LightBlue
+import com.agiotabank.ui.theme.TextPrimary
+import com.agiotabank.ui.theme.TextSecondary
 
-@Preview
 @Composable
-fun HomeScreen(onNavigate: (Telas) -> Unit = {}) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(DarkBackground)
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(DarkBackground)
-                .padding(horizontal = 16.dp, vertical = 12.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(
-                "Olá, Cliente",
-                fontSize = 20.sp,
-                color = TextPrimary,
-                fontWeight = FontWeight.Medium
-            )
-            Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-                IconButton(onClick = { /* RF-020: Alertas */ }) {
-                    Icon(Icons.Filled.Notifications, null, tint = TextPrimary)
-                }
-                IconButton(onClick = { /* RF-019: Histórico de acessos */ }) {
-                    Icon(Icons.Filled.History, null, tint = TextPrimary)
-                }
-                Box(
-                    modifier = Modifier
-                        .size(32.dp)
-                        .clip(CircleShape)
-                        .background(LightBlue)
-                        .clickable { onNavigate(Telas.PERFIL) },
-                    contentAlignment = Alignment.Center,
+fun HomeScreen(onNavigate: (Telas) -> Unit = {}, bottomBar: @Composable () -> Unit = {}) {
+    Scaffold(
+        topBar = {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 12.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    "Olá, Cliente",
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Medium
+                )
+                Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                    IconButton(onClick = { /* RF-020: Alertas */ }) {
+                        Icon(Icons.Filled.Notifications, null, tint = TextPrimary)
+                    }
+                    IconButton(onClick = { /* RF-019: Histórico de acessos */ }) {
+                        Icon(Icons.Filled.History, null, tint = TextPrimary)
+                    }
+                    Box(
+                        modifier = Modifier
+                            .size(32.dp)
+                            .clip(CircleShape)
+                            .background(LightBlue)
+                            .clickable { onNavigate(Telas.PERFIL) },
+                        contentAlignment = Alignment.Center,
 
-                ) {
-                    Text("C", color = TextPrimary, fontWeight = FontWeight.Bold)
+                        ) {
+                        Text("C", color = TextPrimary, fontWeight = FontWeight.Bold)
+                    }
                 }
             }
-        }
-
+        },
+        bottomBar = bottomBar,
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background)
+            .padding(WindowInsets.statusBars.asPaddingValues())
+    ) {
+        contentPadding ->
         LazyColumn(
+            Modifier
+                .fillMaxSize()
+                .padding(contentPadding),
             contentPadding = PaddingValues(20.dp),
             verticalArrangement = Arrangement.spacedBy(24.dp)
         ) {
@@ -96,7 +118,7 @@ fun HomeScreen(onNavigate: (Telas) -> Unit = {}) {
                     Text("Saldo disponível", color = TextSecondary, fontSize = 14.sp)
                     Spacer(Modifier.height(4.dp))
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        Text("R$ 3.363,32", color = TextPrimary, fontSize = 28.sp, fontWeight = FontWeight.SemiBold)
+                        Text("R$ 3.363,32", fontSize = 28.sp, fontWeight = FontWeight.SemiBold)
                         Spacer(Modifier.width(12.dp))
                         IconButton(onClick = { }, modifier = Modifier.size(24.dp)) {
                             Icon(Icons.Filled.Visibility, null, tint = TextSecondary, modifier = Modifier.size(20.dp))
@@ -116,7 +138,7 @@ fun HomeScreen(onNavigate: (Telas) -> Unit = {}) {
 
             // RF-014: Cartão de crédito
             item {
-                Card(Modifier.fillMaxWidth(), RoundedCornerShape(12.dp), colors = CardDefaults.cardColors(CardBackground)) {
+                Card(Modifier.fillMaxWidth(), RoundedCornerShape(12.dp)) {
                     Row(Modifier.fillMaxWidth().padding(20.dp), Arrangement.SpaceBetween, Alignment.CenterVertically) {
                         Column {
                             Row(verticalAlignment = Alignment.CenterVertically) {
@@ -125,8 +147,8 @@ fun HomeScreen(onNavigate: (Telas) -> Unit = {}) {
                                 Text("Cartão de crédito", color = TextSecondary, fontSize = 13.sp)
                             }
                             Spacer(Modifier.height(8.dp))
-                            Text("Fatura atual", color = TextPrimary, fontSize = 12.sp)
-                            Text("R$ 563,00", color = TextPrimary, fontSize = 20.sp, fontWeight = FontWeight.SemiBold)
+                            Text("Fatura atual", fontSize = 12.sp)
+                            Text("R$ 563,00", fontSize = 20.sp, fontWeight = FontWeight.SemiBold)
                         }
                         IconButton(onClick = { onNavigate(Telas.CARTOES) }) {  // RF-015
                             Icon(Icons.Filled.ChevronRight, contentDescription = null, tint = TextSecondary)
@@ -139,14 +161,14 @@ fun HomeScreen(onNavigate: (Telas) -> Unit = {}) {
             item {
                 Row(Modifier.fillMaxWidth(), Arrangement.spacedBy(12.dp)) {
                     SmallCard(Icons.Filled.TrendingUp, "Investimentos", "R$ 7.800", Modifier.weight(1f))  // RF-017
-                    SmallCard(Icons.Filled.Savings, "Empréstimo", "Até R$ 5.000", Modifier.weight(1f))  // RF-016
+                    SmallCard(Icons.Filled.Savings, "Empréstimo", "Até R$ 5.000", Modifier.weight(1f).clickable(onClick = {onNavigate(Telas.EMPRESTIMO)}))  // RF-016
                 }
             }
 
             // RF-007: Extrato recente
             item {
                 Row(Modifier.fillMaxWidth(), Arrangement.SpaceBetween, Alignment.CenterVertically) {
-                    Text("Extrato", color = TextPrimary, fontSize = 18.sp, fontWeight = FontWeight.SemiBold)
+                    Text("Extrato", fontSize = 18.sp, fontWeight = FontWeight.SemiBold)
                     Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                         IconButton(onClick = { /* RF-023: Exportar PDF */ }) {
                             Icon(Icons.Filled.PictureAsPdf, null, tint = LightBlue, modifier = Modifier.size(20.dp))
@@ -168,7 +190,7 @@ fun HomeScreen(onNavigate: (Telas) -> Unit = {}) {
             )) { t ->
                 Row(Modifier.fillMaxWidth().padding(vertical = 8.dp), Arrangement.SpaceBetween, Alignment.CenterVertically) {
                     Row(horizontalArrangement = Arrangement.spacedBy(12.dp), verticalAlignment = Alignment.CenterVertically) {
-                        Surface(Modifier.size(40.dp), CircleShape, color = CardBackground) {
+                        Surface(Modifier.size(40.dp), CircleShape) {
                             Box(contentAlignment = Alignment.Center) {
                                 Icon(
                                     when {
@@ -183,8 +205,8 @@ fun HomeScreen(onNavigate: (Telas) -> Unit = {}) {
                             }
                         }
                         Column {
-                            Text(t.descricao, color = TextPrimary, fontSize = 14.sp, maxLines = 1)
-                            Text(t.data, color = TextSecondary, fontSize = 12.sp)
+                            Text(t.descricao, fontSize = 14.sp, maxLines = 1)
+                            Text(t.data, fontSize = 12.sp)
                         }
                     }
                     Text(
@@ -211,7 +233,7 @@ private fun ActionButton(icon: ImageVector, label: String, onClick: () -> Unit =
             shape = CircleShape,
             colors = IconButtonDefaults.iconButtonColors(containerColor = CardBackground)
         ) {
-            Icon(icon, null, tint = TextPrimary, modifier = Modifier.size(24.dp))
+            Icon(icon, null, modifier = Modifier.size(24.dp))
         }
         Text(label, color = TextSecondary, fontSize = 12.sp)
     }
@@ -219,11 +241,11 @@ private fun ActionButton(icon: ImageVector, label: String, onClick: () -> Unit =
 
 @Composable
 private fun SmallCard(icon: ImageVector, title: String, value: String, modifier: Modifier = Modifier) {
-    Card(modifier, RoundedCornerShape(12.dp), colors = CardDefaults.cardColors(CardBackground)) {
+    Card(modifier, RoundedCornerShape(12.dp)) {
         Column(Modifier.padding(16.dp), Arrangement.spacedBy(8.dp)) {
             Icon(icon, null, tint = LightBlue, modifier = Modifier.size(20.dp))
             Text(title, color = TextSecondary, fontSize = 12.sp)
-            Text(value, color = TextPrimary, fontSize = 16.sp, fontWeight = FontWeight.SemiBold)
+            Text(value, fontSize = 16.sp, fontWeight = FontWeight.SemiBold)
         }
     }
 }
