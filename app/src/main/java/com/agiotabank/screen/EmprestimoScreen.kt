@@ -56,7 +56,7 @@ fun EmprestimoScreen(onVoltar: () -> Unit = {}) {
     }
 
     Scaffold(
-        modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background).padding(WindowInsets.statusBars.asPaddingValues()),
+        modifier = Modifier.fillMaxSize(),
         topBar = {
             TopAppBar(
                 title = {

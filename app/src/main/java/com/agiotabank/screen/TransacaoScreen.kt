@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -25,6 +24,7 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -39,6 +39,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarColors
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
@@ -92,58 +95,62 @@ fun TransacaoScreen(goBack: () -> Unit = {}) {
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background),
-        contentWindowInsets = WindowInsets(0),
         topBar = {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .statusBarsPadding()
-                    .padding(horizontal = 16.dp, vertical = 12.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                IconButton(
-                    onClick = { voltar() }) {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Filled.ArrowBack, // Ícone do pacote material.icons
-                        contentDescription = "Voltar"
-                    )
-                }
-                Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+            TopAppBar(
+                title = { Text("Transação") },
+                navigationIcon = {
+                    IconButton(onClick = { voltar() }) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Voltar"
+                        )
+                    }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.background,
+                    titleContentColor = MaterialTheme.colorScheme.onBackground,
+                    navigationIconContentColor = MaterialTheme.colorScheme.onBackground,
+                    actionIconContentColor = MaterialTheme.colorScheme.onBackground
+                ),
+                actions = {
                     IconButton(onClick = { /* RF-020: Alertas */ }) {
-                        Icon(Icons.Filled.Notifications, null)
+                        Icon(Icons.Filled.Notifications, contentDescription = "Alertas")
                     }
                     IconButton(onClick = { /* RF-019: Histórico de acessos */ }) {
-                        Icon(Icons.Filled.History, null)
+                        Icon(Icons.Filled.History, contentDescription = "Histórico")
                     }
                     Box(
                         Modifier
+                            .padding(bottom = 20.dp)
                             .size(32.dp)
                             .clip(CircleShape)
-                            .background(LightBlue),
+                            .background(LightBlue)
+                            .padding(2.dp),
                         contentAlignment = Alignment.Center
                     ) {
                         Text("C", fontWeight = FontWeight.Bold)
                     }
-                }
-            }
-        }, bottomBar = {
-            Box(
+                },
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 12.dp)
+            )
+        },
+        bottomBar = {
+            BottomAppBar(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .navigationBarsPadding()
-                    .padding(20.dp)
+                    .padding(20.dp),
+                containerColor = MaterialTheme.colorScheme.background
             ) {
-                Button(
-                    onClick = { avancar() },
-                    shape = RoundedCornerShape(12.dp),
-                    enabled = isButtonEnabled,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(50.dp),
-                ) {
-                    Text("Continuar", fontSize = 18.sp)
-                }
+                    Button(
+                        onClick = { avancar() },
+                        shape = RoundedCornerShape(12.dp),
+                        enabled = isButtonEnabled,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(50.dp),
+                    ) {
+                        Text("Continuar", fontSize = 18.sp)
+                    }
             }
         }) { paddingValues ->
         val options = mapOf(
@@ -411,7 +418,25 @@ fun Etapa3(paddingValues: PaddingValues) {
             .padding(20.dp),
         verticalArrangement = Arrangement.spacedBy(24.dp)
     ) {
-
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+            elevation = CardDefaults.cardElevation(4.dp),
+            shape = RoundedCornerShape(12.dp)
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(20.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                Text("Confirmação", fontWeight = FontWeight.Bold, fontSize = 18.sp)
+                Text("Banco: Agibank S.A. - 019")
+                Text("Tipo de conta: Conta Corrente")
+                Text("Agência: 1234")
+                Text("Conta: 123456-7")
+                Text("Valor: R$ 1.234,56")
+            }
+        }
     }
 }
 
