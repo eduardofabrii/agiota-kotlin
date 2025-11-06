@@ -77,7 +77,6 @@ fun TransacaoScreen(goBack: () -> Unit = {}) {
             goBack()
         }
     }
-
     fun avancar() {
         if (etapa < 3) {
             etapa++
