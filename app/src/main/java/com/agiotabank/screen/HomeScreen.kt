@@ -58,7 +58,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.agiotabank.components.Telas
-import com.agiotabank.model.Transacao
 import com.agiotabank.ui.theme.CardBackground
 import com.agiotabank.ui.theme.Green
 import com.agiotabank.ui.theme.LightBlue
@@ -230,7 +229,7 @@ fun HomeScreen(onNavigate: (Telas) -> Unit = {}, bottomBar: @Composable () -> Un
                 }
             }
 
-            items(
+            /*items(
                 listOf(
                     Transacao("Pix recebido de João Silva", "+R$ 250,00", "Hoje, 14:32"),
                     Transacao("Pagamento de boleto - Conta de luz", "-R$ 120,00", "Ontem, 09:15"),
@@ -277,7 +276,7 @@ fun HomeScreen(onNavigate: (Telas) -> Unit = {}, bottomBar: @Composable () -> Un
                         fontWeight = FontWeight.Medium
                     )
                 }
-            }
+            }*/
         }
     }
 }

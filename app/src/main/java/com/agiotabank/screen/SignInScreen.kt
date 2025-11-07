@@ -21,7 +21,7 @@ import com.agiotabank.ui.theme.LightBlue
 import com.agiotabank.ui.theme.TextPrimary
 
 @Composable
-fun SignInScreen(onSignIn: () -> Unit) {
+fun SignInScreen(onSignIn: () -> Unit, onCreateAccount: (nome: String, email: String, senha: String) -> Any) {
     var nome by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var senha by remember { mutableStateOf("") }
@@ -69,6 +69,7 @@ fun SignInScreen(onSignIn: () -> Unit) {
             onClick = {
                 attemptSubmit = true
                 if (nome.isNotBlank() && email.isNotBlank() && senha.isNotBlank()) {
+                    onCreateAccount(nome, email, senha)
                     onSignIn()
                 }
             },

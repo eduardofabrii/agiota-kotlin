@@ -11,5 +11,5 @@ interface TransacaoDao {
     suspend fun insert(transacao: Transacao): Long
 
     @Query("SELECT * FROM transacoes WHERE deContaId = :contaId OR paraContaId = :contaId")
-    suspend fun getByContaId(contaId: Long): Flow<List<Transacao>>
+    fun getByContaId(contaId: Long): Flow<List<Transacao>>
 }

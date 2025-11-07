@@ -1,4 +1,3 @@
-// app/src/main/java/com/agiotabank/data/ContaRepository.kt
 package com.agiotabank.data
 
 import kotlinx.coroutines.Dispatchers
@@ -6,15 +5,23 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import javax.inject.Singleton
 
-@Singleton
+
 class ContaRepository(
-    private val contaDao: ContaDao,
-    private val transacaoDao: TransacaoDao
+    private val contaDao: ContaDao
 ) {
-    suspend fun criarConta(nome: String, idade: Int, email: String, senha: String, saldoInicial: Double, tipo: TipoConta): Conta = withContext(Dispatchers.IO) {
+    suspend fun updateSaldo(conta: Conta, valor: Double): Int = withContext(Dispatchers.IO) {
+        contaDao.updateSaldo(conta.id, valor)
+    }
+
+    suspend fun criarConta(
+        nome: String,
+        email: String,
+        senha: String,
+        saldoInicial: Double,
+        tipo: TipoConta
+    ): Conta = withContext(Dispatchers.IO) {
         val temp = Conta(
             nome = nome,
-            idade = idade,
             email = email,
             senha = senha,
             saldo = saldoInicial,
@@ -23,4 +30,13 @@ class ContaRepository(
         val id = contaDao.insert(temp)
         temp.copy(id = id)
     }
+
+    suspend fun login(email: String, senha: String): Conta? = withContext(Dispatchers.IO) {
+        contaDao.login(email, senha)
+    }
+
+    suspend fun remover(conta: Conta) = withContext(Dispatchers.IO) {
+        contaDao.remover(conta)
+    }
+
 }

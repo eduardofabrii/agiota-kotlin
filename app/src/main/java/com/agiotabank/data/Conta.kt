@@ -13,11 +13,10 @@ data class Conta(
     @PrimaryKey(autoGenerate = true)
     val id: Long = 0L,
     val nome: String,
-    val idade: Int,
     val email: String,
     val senha: String,
-    var saldo: Double = 0.0,
-    val tipo: TipoConta,
+    val saldo: Double = 5000.0,
+    val tipo: TipoConta = TipoConta.CORRENTE,
     val agencia: String = "0001",
     val numero: String = gerarNumero()
 )
