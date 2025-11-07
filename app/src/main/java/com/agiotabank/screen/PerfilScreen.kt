@@ -22,6 +22,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.agiotabank.data.Conta
 import com.agiotabank.ui.theme.CardBackground
 import com.agiotabank.ui.theme.DarkBackground
 import com.agiotabank.ui.theme.LightBlue
@@ -30,11 +31,11 @@ import com.agiotabank.ui.theme.TextPrimary
 import com.agiotabank.ui.theme.TextSecondary
 
 
-@Preview
 @Composable
 fun PerfilScreen(
     goBack: () -> Unit = {},
-    onSair: () -> Unit = {}
+    onSair: () -> Unit = {},
+    conta: Conta?
 ) {
     Scaffold(
         modifier = Modifier
@@ -97,14 +98,14 @@ fun PerfilScreen(
 
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     Text(
-                        text = "Cliente Agiota",
+                        text = conta?.nome ?: "Erro ao carregar nome",
                         color = TextPrimary,
                         fontSize = 22.sp,
                         fontWeight = FontWeight.Bold
                     )
                     Spacer(Modifier.height(4.dp))
                     Text(
-                        text = "cliente@agiotabank.com",
+                        text = conta?.email ?: "Erro ao carregar email",
                         color = TextSecondary,
                         fontSize = 16.sp
                     )
@@ -131,13 +132,13 @@ fun PerfilScreen(
                         InfoRow(
                             icon = Icons.Default.Pin,
                             label = "Agência",
-                            value = "0001"
+                            value = conta?.agencia ?: "Erro ao carregar agência"
                         )
                         Divider(color = TextSecondary.copy(alpha = 0.2f), thickness = 1.dp, modifier = Modifier.padding(vertical = 12.dp))
                         InfoRow(
                             icon = Icons.Default.Info,
                             label = "Conta",
-                            value = "123456-7"
+                            value = conta?.numero ?: "Erro ao carregar conta"
                         )
                     }
                 }
