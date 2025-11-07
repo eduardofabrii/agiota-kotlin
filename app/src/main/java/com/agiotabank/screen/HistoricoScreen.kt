@@ -22,7 +22,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.agiotabank.model.Transacao
 import com.agiotabank.ui.theme.CardBackground
 import com.agiotabank.ui.theme.DarkBackground
 import com.agiotabank.ui.theme.Green
@@ -33,24 +32,6 @@ import com.agiotabank.ui.theme.TextSecondary
 @Preview
 @Composable
 fun HistoricoScreen(goBack: () -> Unit = {})  {
-
-    val mockedTransactions = listOf(
-        Transacao("Pix recebido de João Silva", "+R$ 250,00", "Hoje, 14:32"),
-        Transacao("Pagamento de boleto - Conta de luz", "-R$ 120,00", "Ontem, 09:15"),
-        Transacao("Transferência para Maria Santos", "-R$ 340,00", "05/10, 16:22"),
-        Transacao("Pix recebido de Pedro Costa", "+R$ 90,00", "04/10, 11:05"),
-        Transacao("Pagamento recorrente - Internet", "-R$ 99,90", "03/10, 08:00"),
-        Transacao("Compra no iFood", "-R$ 85,50", "02/10, 19:45"),
-        Transacao("Pix recebido de Ana Beatriz", "+R$ 500,00", "02/10, 12:00"),
-        Transacao("Transferência TED - Banco X", "-R$ 1.200,00", "01/10, 10:10"),
-        Transacao("Compra - Supermercado", "-R$ 430,70", "30/09, 17:30"),
-        Transacao("Pix recebido de Carlos Ltda", "+R$ 1.800,00", "30/09, 09:00"),
-        Transacao("Pagamento fatura - Cartão", "-R$ 563,00", "29/09, 14:00"),
-        Transacao("Pix recebido de Aragão", "+R$ 10,00", "28/09, 20:15"),
-        Transacao("Pix recebido de Jão da manga", "+R$ 1500,00", "28/09, 20:15"),
-        Transacao("Pix recebido de sla quem", "+R$ 11,00", "28/09, 20:15"),
-        Transacao("Pix recebido de Zezin Carpintero", "+R$ 15,00", "28/09, 20:15"),
-    )
 
     Scaffold(
         modifier = Modifier
@@ -101,48 +82,48 @@ fun HistoricoScreen(goBack: () -> Unit = {})  {
             contentPadding = PaddingValues(horizontal = 20.dp, vertical = 16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            items(mockedTransactions) { transacao ->
-                TransactionItem(transacao = transacao)
-            }
+//            items(mockedTransactions) { transacao ->
+//                TransactionItem(transacao = transacao)
+//            }
         }
     }
 }
 
-@Composable
-private fun TransactionItem(transacao: Transacao) {
-    Row(
-        Modifier.fillMaxWidth(),
-        Arrangement.SpaceBetween,
-        Alignment.CenterVertically
-    ) {
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(12.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Surface(Modifier.size(40.dp), CircleShape, color = CardBackground) {
-                Box(contentAlignment = Alignment.Center) {
-                    Icon(
-                        when {
-                            transacao.descricao.contains("Pix") -> Icons.Filled.QrCode
-                            transacao.descricao.contains("boleto") || transacao.descricao.contains("Conta") -> Icons.Filled.Receipt
-                            transacao.descricao.contains("Transferência") -> Icons.Filled.SwapHoriz
-                            else -> Icons.Filled.Payments
-                        },
-                        null, tint = if (transacao.valor.startsWith("+")) Green else TextPrimary,
-                        modifier = Modifier.size(20.dp)
-                    )
-                }
-            }
-            Column {
-                Text(transacao.descricao, color = TextPrimary, fontSize = 14.sp, maxLines = 1)
-                Text(transacao.data, color = TextSecondary, fontSize = 12.sp)
-            }
-        }
-        Text(
-            transacao.valor,
-            color = if (transacao.valor.startsWith("+")) Green else TextPrimary,
-            fontSize = 15.sp,
-            fontWeight = FontWeight.Medium
-        )
-    }
-}
+//@Composable
+//private fun TransactionItem(transacao: Transacao) {
+//    Row(
+//        Modifier.fillMaxWidth(),
+//        Arrangement.SpaceBetween,
+//        Alignment.CenterVertically
+//    ) {
+//        Row(
+//            horizontalArrangement = Arrangement.spacedBy(12.dp),
+//            verticalAlignment = Alignment.CenterVertically
+//        ) {
+//            Surface(Modifier.size(40.dp), CircleShape, color = CardBackground) {
+//                Box(contentAlignment = Alignment.Center) {
+//                    Icon(
+//                        when {
+//                            transacao.descricao.contains("Pix") -> Icons.Filled.QrCode
+//                            transacao.descricao.contains("boleto") || transacao.descricao.contains("Conta") -> Icons.Filled.Receipt
+//                            transacao.descricao.contains("Transferência") -> Icons.Filled.SwapHoriz
+//                            else -> Icons.Filled.Payments
+//                        },
+//                        null, tint = if (transacao.valor.startsWith("+")) Green else TextPrimary,
+//                        modifier = Modifier.size(20.dp)
+//                    )
+//                }
+//            }
+//            Column {
+//                Text(transacao.descricao, color = TextPrimary, fontSize = 14.sp, maxLines = 1)
+//                Text(transacao.data, color = TextSecondary, fontSize = 12.sp)
+//            }
+//        }
+//        Text(
+//            transacao.valor,
+//            color = if (transacao.valor.startsWith("+")) Green else TextPrimary,
+//            fontSize = 15.sp,
+//            fontWeight = FontWeight.Medium
+//        )
+//    }
+//}

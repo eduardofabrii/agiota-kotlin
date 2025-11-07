@@ -9,12 +9,15 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material.icons.filled.CreditCard
+import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.MoreHoriz
+import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.PhoneIphone
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
@@ -22,9 +25,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.SpanStyle
@@ -37,46 +43,60 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.agiotabank.ui.theme.*
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CardScreen(goBack: () -> Unit = {}) {
     Scaffold(
         modifier = Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
-            .padding(WindowInsets.statusBars.asPaddingValues()),
+            .fillMaxSize(),
         topBar = {
-            Row(
+            TopAppBar(
+                title = {
+                    Text(
+                        text = "Cartão",
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Medium
+                    )
+                },
+                navigationIcon = {
+                    IconButton(onClick = { goBack() }) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Voltar"
+                        )
+                    }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.background,
+                    titleContentColor = MaterialTheme.colorScheme.onBackground,
+                    navigationIconContentColor = MaterialTheme.colorScheme.onBackground,
+                    actionIconContentColor = MaterialTheme.colorScheme.onBackground
+                ),
+                actions = {
+                    IconButton(onClick = { /* RF-020: Alertas */ }) {
+                        Icon(Icons.Filled.Notifications, contentDescription = "Alertas")
+                    }
+                    IconButton(onClick = { /* RF-019: Histórico de acessos */ }) {
+                        Icon(Icons.Filled.History, contentDescription = "Histórico")
+                    }
+                    Box(
+                        Modifier
+                            .padding(bottom = 20.dp)
+                            .size(32.dp)
+                            .clip(CircleShape)
+                            .background(LightBlue)
+                            .padding(2.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text("C", fontWeight = FontWeight.Bold)
+                    }
+                },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 12.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                IconButton(
-                    onClick = { goBack() }
-                ) {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Filled.ArrowBack, // Ícone do pacote material.icons
-                        contentDescription = "Voltar"
-                    )
-                }
-                Text(
-                    text = "Cartão",
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Medium
-                )
-                Row(horizontalArrangement = Arrangement.spacedBy(4.dp), verticalAlignment = Alignment.CenterVertically) {
-                    IconButton(onClick = { }) { Icon(Icons.Filled.Settings, null, tint = TextPrimary) }
-                    Surface(Modifier.size(32.dp), shape = CircleShape, color = LightBlue) {
-                        Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                            Text("C", fontWeight = FontWeight.Bold)
-                        }
-                    }
-                }
-            }
+                    .padding(horizontal = 12.dp)
+            )
         }
-    ) {
-        contentPadding ->
+    ) { contentPadding ->
         // Top bar simples, alinhado ao seu padrão
 
         Column(
@@ -93,9 +113,16 @@ fun CardScreen(goBack: () -> Unit = {}) {
                     .aspectRatio(1.6f),
                 shape = RoundedCornerShape(16.dp)
             ) {
-                Box(Modifier.fillMaxSize().padding(18.dp)) {
+                Box(Modifier
+                    .fillMaxSize()
+                    .padding(18.dp)) {
                     // Fundo com "brilho" em gradiente usando apenas as cores do tema
-                    val glow = Brush.linearGradient(listOf(LightBlue.copy(alpha = 0.25f), Color.Transparent))
+                    val glow = Brush.linearGradient(
+                        listOf(
+                            LightBlue.copy(alpha = 0.25f),
+                            Color.Transparent
+                        )
+                    )
                     Box(
                         Modifier
                             .matchParentSize()
@@ -108,7 +135,11 @@ fun CardScreen(goBack: () -> Unit = {}) {
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Surface(Modifier.size(36.dp), shape = CircleShape, color = LightBlue.copy(alpha = 0.15f)) {}
+                        Surface(
+                            Modifier.size(36.dp),
+                            shape = CircleShape,
+                            color = LightBlue.copy(alpha = 0.15f)
+                        ) {}
                         Icon(Icons.Filled.CreditCard, null, tint = LightBlue)
                     }
 
@@ -161,7 +192,10 @@ fun CardScreen(goBack: () -> Unit = {}) {
                 shape = RoundedCornerShape(12.dp),
             ) {
                 Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
                         Icon(Icons.Filled.CreditCard, null, tint = LightBlue)
                         Text("Fatura atual", color = TextSecondary, fontSize = 13.sp)
                     }
@@ -198,7 +232,13 @@ private fun CardNumber(masked: String) {
     val text = buildAnnotatedString {
         val chunks = masked.split(" ")
         chunks.forEachIndexed { idx, chunk ->
-            withStyle(SpanStyle(letterSpacing = 2.sp, color = TextPrimary, fontWeight = FontWeight.Bold)) {
+            withStyle(
+                SpanStyle(
+                    letterSpacing = 2.sp,
+                    color = TextPrimary,
+                    fontWeight = FontWeight.Bold
+                )
+            ) {
                 append(chunk)
             }
             if (idx != chunks.lastIndex) append("  ")
@@ -209,7 +249,10 @@ private fun CardNumber(masked: String) {
 
 @Composable
 private fun CardAction(icon: androidx.compose.ui.graphics.vector.ImageVector, label: String) {
-    Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(8.dp)) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
         Surface(Modifier.size(56.dp), shape = CircleShape) {
             Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 Icon(icon, null, tint = TextPrimary)
@@ -232,7 +275,11 @@ private fun SmallInfoCard(title: String, subtitle: String, modifier: Modifier = 
     }
 }
 
-@Preview(name = "Card Screen — Dark", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Preview(
+    name = "Card Screen — Dark",
+    showBackground = true,
+    uiMode = Configuration.UI_MODE_NIGHT_YES
+)
 @Composable
 private fun PreviewCardDark() {
     AgiotaBankTheme(darkTheme = true, dynamicColor = false) {

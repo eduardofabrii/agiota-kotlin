@@ -23,7 +23,7 @@ import com.agiotabank.ui.theme.TextPrimary
 @Preview
 @Composable
 fun LoginScreen(
-    onLogin: () -> Unit = {},
+    onLogin: (email: String, senha: String) -> Unit = { _, _ -> },
     onNavigateToSignIn: () -> Unit = {}
 ) {
     var email by remember { mutableStateOf("") }
@@ -63,7 +63,7 @@ fun LoginScreen(
             onClick = {
                 attemptSubmit = true
                 if (email.isNotBlank() && senha.isNotBlank()) {
-                    onLogin()
+                    onLogin(email, senha)
                 }
             },
             modifier = Modifier
