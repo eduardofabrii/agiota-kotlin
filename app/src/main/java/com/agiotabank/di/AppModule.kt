@@ -3,6 +3,7 @@ package com.agiotabank.di
 import android.content.Context
 import androidx.room.Room
 import com.agiotabank.data.AppDatabase
+import com.agiotabank.data.CardDao
 import com.agiotabank.data.ContaDao
 import com.agiotabank.data.ContaRepository
 import com.agiotabank.data.TransacaoDao
@@ -20,13 +21,18 @@ object AppModule {
     @Provides
     @Singleton
     fun provideDatabase(@ApplicationContext ctx: Context): AppDatabase =
-        Room.databaseBuilder(ctx, AppDatabase::class.java, "agiota.db").build()
+        Room.databaseBuilder(ctx, AppDatabase::class.java, "agiota.db")
+            .fallbackToDestructiveMigration()
+            .build()
 
     @Provides
     fun provideContaDao(db: AppDatabase): ContaDao = db.contaDao()
 
     @Provides
     fun provideTransacaoDao(db: AppDatabase): TransacaoDao = db.transacaoDao()
+
+    @Provides
+    fun provideCardDao(db: AppDatabase): CardDao = db.cardDao()
 
     @Provides
     @Singleton
