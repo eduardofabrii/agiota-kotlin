@@ -12,13 +12,13 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.agiotabank.screen.CardScreen
 import com.agiotabank.screen.EmprestimoScreen
 import com.agiotabank.screen.HistoricoScreen
@@ -60,7 +60,13 @@ fun Navegador() {
         }
         composable(Telas.HOME.name) {
             HomeScreen(
-                onNavigate = { nav.navigate(it.name) },
+                onNavigate = { tela ->
+                    val route = when (tela) {
+                        Telas.CARTOES -> "${Telas.CARTOES.name}/${conta?.id ?: 0L}"
+                        else -> tela.name
+                    }
+                    nav.navigate(route)
+                },
                 bottomBar = ({
                     BottomBar(telaAtual = Telas.HOME, onTelaSelecionada = { nav.navigate(it.name) })
                 }),
@@ -68,10 +74,14 @@ fun Navegador() {
             )
         }
         composable(Telas.TRANSACAO.name) { TransacaoScreen(goBack = { nav.popBackStack() }) }
-        composable(Telas.CARTOES.name) {
+        composable(
+            route = "${Telas.CARTOES.name}/{contaId}",
+            arguments = listOf(navArgument("contaId") { type = NavType.LongType })
+        ) { backStackEntry ->
             CardScreen(
                 goBack = { nav.popBackStack() },
-                holderName = conta?.nome ?: ""
+                holderName = conta?.nome ?: "",
+                contaId = backStackEntry.arguments?.getLong("contaId") ?: 0L
             )
         }
         composable(Telas.EMPRESTIMO.name) { EmprestimoScreen { nav.popBackStack() } }

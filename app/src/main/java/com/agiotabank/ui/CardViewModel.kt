@@ -1,5 +1,6 @@
-package com.agiotabank.viewmodel
+package com.agiotabank.ui
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.agiotabank.data.Card
@@ -11,9 +12,14 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class CardViewModel @Inject constructor(private val cardDao: CardDao) : ViewModel() {
+class CardViewModel @Inject constructor(
+    private val cardDao: CardDao,
+    savedStateHandle: SavedStateHandle
+) : ViewModel() {
 
-    val cards = cardDao.getAllCards()
+    private val contaId: Long = savedStateHandle.get<Long>("contaId") ?: 0L
+
+    val cards = cardDao.getCardsByContaId(contaId)
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5000),

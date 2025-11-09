@@ -71,7 +71,7 @@ import com.agiotabank.ui.theme.AgiotaBankTheme
 import com.agiotabank.ui.theme.LightBlue
 import com.agiotabank.ui.theme.TextPrimary
 import com.agiotabank.ui.theme.TextSecondary
-import com.agiotabank.viewmodel.CardViewModel
+import com.agiotabank.ui.CardViewModel
 import kotlin.random.Random
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -79,6 +79,7 @@ import kotlin.random.Random
 fun CardScreen(
     goBack: () -> Unit = {},
     holderName: String,
+    contaId: Long,
     viewModel: CardViewModel = hiltViewModel()
 ) {
     val cards by viewModel.cards.collectAsState()
@@ -157,6 +158,7 @@ fun CardScreen(
         if (showAddCardDialog) {
             AddCardDialog(
                 holderName = holderName,
+                contaId = contaId,
                 onDismiss = { showAddCardDialog = false },
                 onCardAdded = {
                     viewModel.addCard(it)
@@ -247,7 +249,7 @@ fun CreditCardItem(card: Card, onDelete: () -> Unit) {
 }
 
 @Composable
-fun AddCardDialog(holderName: String, onDismiss: () -> Unit, onCardAdded: (Card) -> Unit) {
+fun AddCardDialog(holderName: String, contaId: Long, onDismiss: () -> Unit, onCardAdded: (Card) -> Unit) {
     val cardNumber by remember { mutableStateOf(generateRandomCardNumber()) }
     var expiryDate by remember { mutableStateOf("") }
     var cvv by remember { mutableStateOf("") }
@@ -296,7 +298,8 @@ fun AddCardDialog(holderName: String, onDismiss: () -> Unit, onCardAdded: (Card)
                         holderName = holderName,
                         number = cardNumber,
                         expiryDate = expiryDate.let { if (it.length == 4) it.substring(0, 2) + "/" + it.substring(2, 4) else it },
-                        cvv = cvv
+                        cvv = cvv,
+                        contaId = contaId
                     )
                     onCardAdded(newCard)
                 }
@@ -375,6 +378,6 @@ private fun CardNumber(masked: String) {
 private fun PreviewCardDark() {
     AgiotaBankTheme(darkTheme = true, dynamicColor = false) {
         // O preview pode não funcionar corretamente com Hilt, mas o AddCardDialog pode ser testado isoladamente
-        AddCardDialog(holderName = "Nome do Titular", onDismiss = {}, onCardAdded = {})
+        AddCardDialog(holderName = "Nome do Titular", contaId = 0L, onDismiss = {}, onCardAdded = {})
     }
 }
