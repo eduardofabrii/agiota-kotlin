@@ -71,10 +71,10 @@ fun Navegador() {
         composable(Telas.HOME.name) {
             HomeScreen(
                 onNavigate = { tela ->
-                    val route = if (tela == Telas.TRANSACAO) {
-                        "${Telas.TRANSACAO.name}/${conta?.id}"
-                    } else {
-                        tela.name
+                    val route = when (tela) {
+                        Telas.CARTOES -> "${Telas.CARTOES.name}/${conta?.id ?: 0L}"
+                        Telas.TRANSACAO -> "${Telas.TRANSACAO.name}/${conta?.id}"
+                        else -> tela.name
                     }
                     nav.navigate(route)
                 },
@@ -120,7 +120,17 @@ fun Navegador() {
                 contaViewModel = contaVm
             )
         }
-        composable(Telas.CARTOES.name) { CardScreen { nav.popBackStack() } }
+        composable(Telas.TRANSACAO.name) { TransacaoScreen(goBack = { nav.popBackStack() }) }
+        composable(
+            route = "${Telas.CARTOES.name}/{contaId}",
+            arguments = listOf(navArgument("contaId") { type = NavType.LongType })
+        ) { backStackEntry ->
+            CardScreen(
+                goBack = { nav.popBackStack() },
+                holderName = conta?.nome ?: "",
+                contaId = backStackEntry.arguments?.getLong("contaId") ?: 0L
+            )
+        }
         composable(Telas.EMPRESTIMO.name) { EmprestimoScreen { nav.popBackStack() } }
         composable(Telas.HISTORICO.name) { HistoricoScreen(goBack = { nav.popBackStack() }) }
     }
