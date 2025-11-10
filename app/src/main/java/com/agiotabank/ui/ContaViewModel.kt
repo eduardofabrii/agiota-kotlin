@@ -23,11 +23,13 @@ class ContaViewModel @Inject constructor(
         nome: String,
         email: String,
         senha: String,
+        cpf: String,
+        telefone: String,
         saldoInicial: Double = 5000.0,
         tipo: TipoConta = TipoConta.CORRENTE
     ) = viewModelScope.launch {
         repo.criarConta(
-            nome, email, senha, saldoInicial, tipo
+            nome, email, senha, cpf, telefone, saldoInicial, tipo
         )
     }
 
@@ -38,6 +40,15 @@ class ContaViewModel @Inject constructor(
             onLoginSuccess()
         }
 
+    }
+
+
+    fun updateNome(novoNome: String) = viewModelScope.launch {
+        _contaLogada.value?.let { contaAtual ->
+            val contaAtualizada = contaAtual.copy(nome = novoNome)
+            repo.updateConta(contaAtualizada)
+            _contaLogada.value = contaAtualizada
+        }
     }
 
     fun atualizarSaldo(valor: Double) = viewModelScope.launch {

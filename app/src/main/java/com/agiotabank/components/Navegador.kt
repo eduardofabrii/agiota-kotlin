@@ -49,7 +49,10 @@ fun Navegador() {
         composable(Telas.SIGNIN.name) {
             SignInScreen(
                 onSignIn = { nav.navigate(Telas.LOGIN.name) },
-                onCreateAccount = { nome, email, senha -> contaVm.criar(nome, email, senha) })
+
+                onCreateAccount = { nome, email, senha, cpf, telefone ->
+                    contaVm.criar(nome, email, senha, cpf, telefone)
+                })
         }
         composable(Telas.LOGIN.name) {
             LoginScreen(onLogin = { email, senha ->
@@ -64,9 +67,22 @@ fun Navegador() {
                 bottomBar = ({
                     BottomBar(telaAtual = Telas.HOME, onTelaSelecionada = { nav.navigate(it.name) })
                 }),
-                nome = conta?.nome ?: ""
+                nome = conta?.nome ?: "",
+                conta = conta
             )
         }
+
+        composable(Telas.PERFIL.name) {
+            PerfilScreen(
+                onSair = { nav.navigate(Telas.LOGIN.name) },
+                goBack = { nav.popBackStack() },
+                conta = conta,
+                onUpdateNome = { novoNome ->
+                    contaVm.updateNome(novoNome)
+                }
+            )
+        }
+
         composable(Telas.TRANSACAO.name) { TransacaoScreen(goBack = { nav.popBackStack() }) }
         composable(Telas.CARTOES.name) { CardScreen { nav.popBackStack() } }
         composable(Telas.EMPRESTIMO.name) { EmprestimoScreen { nav.popBackStack() } }

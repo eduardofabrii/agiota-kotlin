@@ -52,14 +52,19 @@ import androidx.compose.ui.unit.sp
 import com.agiotabank.components.Telas
 import com.agiotabank.ui.theme.CardBackground
 import com.agiotabank.ui.theme.LightBlue
+import com.agiotabank.ui.theme.TextPrimary
 import com.agiotabank.ui.theme.TextSecondary
+import com.agiotabank.data.Conta
+import com.agiotabank.ui.theme.LightBlue
+import com.agiotabank.ui.theme.TextPrimary
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
     onNavigate: (Telas) -> Unit = {},
     bottomBar: @Composable () -> Unit = {},
-    nome: String
+    nome: String,
+    conta: Conta?
 ) {
     Scaffold(
         topBar = {
@@ -94,7 +99,12 @@ fun HomeScreen(
                             .clickable(onClick = { onNavigate(Telas.PERFIL) }),
                         contentAlignment = Alignment.Center
                     ) {
-                        Text("C", fontWeight = FontWeight.Bold)
+                        Text(
+                            conta?.nome?.firstOrNull()?.toString() ?: "C",
+                            color = TextPrimary,
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 16.sp
+                        )
                     }
                 },
                 modifier = Modifier

@@ -19,6 +19,9 @@ interface ContaDao {
     @Query("SELECT * FROM contas WHERE email = :email AND senha = :senha")
     suspend fun login(email: String, senha: String): Conta?
 
+    @Update
+    suspend fun update(conta: Conta)
+
     @Delete
     suspend fun remover(conta: Conta)
 }

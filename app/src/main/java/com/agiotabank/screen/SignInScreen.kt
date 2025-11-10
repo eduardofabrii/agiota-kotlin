@@ -7,6 +7,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Phone // <-- IMPORTAR
+import androidx.compose.material.icons.filled.Pin // <-- IMPORTAR
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -21,10 +23,16 @@ import com.agiotabank.ui.theme.LightBlue
 import com.agiotabank.ui.theme.TextPrimary
 
 @Composable
-fun SignInScreen(onSignIn: () -> Unit, onCreateAccount: (nome: String, email: String, senha: String) -> Any) {
+fun SignInScreen(
+    onSignIn: () -> Unit,
+
+    onCreateAccount: (nome: String, email: String, senha: String, cpf: String, telefone: String) -> Any
+) {
     var nome by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var senha by remember { mutableStateOf("") }
+    var cpf by remember { mutableStateOf("") }
+    var telefone by remember { mutableStateOf("") }
     var attemptSubmit by remember { mutableStateOf(false) }
 
     Column(
@@ -56,6 +64,24 @@ fun SignInScreen(onSignIn: () -> Unit, onCreateAccount: (nome: String, email: St
         )
         Spacer(modifier = Modifier.height(16.dp))
 
+        AuthInputField(
+            value = cpf,
+            onValueChange = { cpf = it },
+            label = "CPF",
+            leadingIcon = Icons.Default.Pin,
+            isError = attemptSubmit && cpf.isBlank()
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+
+        AuthInputField(
+            value = telefone,
+            onValueChange = { telefone = it },
+            label = "Telefone",
+            leadingIcon = Icons.Default.Phone,
+            isError = attemptSubmit && telefone.isBlank()
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+
         PasswordInputField(
             value = senha,
             onValueChange = { senha = it },
@@ -68,8 +94,10 @@ fun SignInScreen(onSignIn: () -> Unit, onCreateAccount: (nome: String, email: St
         Button(
             onClick = {
                 attemptSubmit = true
-                if (nome.isNotBlank() && email.isNotBlank() && senha.isNotBlank()) {
-                    onCreateAccount(nome, email, senha)
+                //Vatualizada
+                if (nome.isNotBlank() && email.isNotBlank() && senha.isNotBlank() && cpf.isNotBlank() && telefone.isNotBlank()) {
+                    //Chamada atualizada
+                    onCreateAccount(nome, email, senha, cpf, telefone)
                     onSignIn()
                 }
             },

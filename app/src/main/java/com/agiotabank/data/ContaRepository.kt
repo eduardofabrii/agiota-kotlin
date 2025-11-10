@@ -13,10 +13,16 @@ class ContaRepository(
         contaDao.updateSaldo(conta.id, valor)
     }
 
+    suspend fun updateConta(conta: Conta) = withContext(Dispatchers.IO) { // <-- ADICIONADO
+        contaDao.update(conta)
+    }
+
     suspend fun criarConta(
         nome: String,
         email: String,
         senha: String,
+        cpf: String,
+        telefone: String,
         saldoInicial: Double,
         tipo: TipoConta
     ): Conta = withContext(Dispatchers.IO) {
@@ -24,6 +30,8 @@ class ContaRepository(
             nome = nome,
             email = email,
             senha = senha,
+            cpf = cpf,
+            telefone = telefone,
             saldo = saldoInicial,
             tipo = tipo
         )
