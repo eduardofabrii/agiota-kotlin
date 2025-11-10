@@ -1,18 +1,20 @@
 package com.agiotabank.screen
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable // <-- IMPORTAR
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.Logout
+import androidx.compose.material.icons.filled.Edit // <-- IMPORTAR
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material.icons.filled.Pin
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.* // <-- IMPORTAR
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -35,8 +37,11 @@ import com.agiotabank.ui.theme.TextSecondary
 fun PerfilScreen(
     goBack: () -> Unit = {},
     onSair: () -> Unit = {},
-    conta: Conta?
+    conta: Conta?,
+    onUpdateNome: (String) -> Unit = {}
 ) {
+    var showEditDialog by remember { mutableStateOf(false) }
+
     Scaffold(
         modifier = Modifier
             .fillMaxSize()
@@ -80,7 +85,6 @@ fun PerfilScreen(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(24.dp)
             ) {
-                // Avatar Grande
                 Surface(
                     modifier = Modifier.size(100.dp),
                     shape = CircleShape,
@@ -88,7 +92,7 @@ fun PerfilScreen(
                 ) {
                     Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                         Text(
-                            "C",
+                            conta?.nome?.firstOrNull()?.toString() ?: "C",
                             color = TextPrimary,
                             fontWeight = FontWeight.Bold,
                             fontSize = 48.sp
@@ -97,12 +101,25 @@ fun PerfilScreen(
                 }
 
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text(
-                        text = conta?.nome ?: "Erro ao carregar nome",
-                        color = TextPrimary,
-                        fontSize = 22.sp,
-                        fontWeight = FontWeight.Bold
-                    )
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(4.dp)
+                    ) {
+                        Text(
+                            text = conta?.nome ?: "Erro ao carregar nome",
+                            color = TextPrimary,
+                            fontSize = 22.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                        Icon(
+                            imageVector = Icons.Default.Edit,
+                            contentDescription = "Editar Nome",
+                            tint = TextSecondary,
+                            modifier = Modifier
+                                .size(18.dp)
+                                .clickable { showEditDialog = true }
+                        )
+                    }
                     Spacer(Modifier.height(4.dp))
                     Text(
                         text = conta?.email ?: "Erro ao carregar email",
@@ -120,21 +137,33 @@ fun PerfilScreen(
                         InfoRow(
                             icon = Icons.Default.Phone,
                             label = "Telefone",
-                            value = "(99) 99999-9999"
+                            value = conta?.telefone ?: "Não informado"
                         )
-                        Divider(color = TextSecondary.copy(alpha = 0.2f), thickness = 1.dp, modifier = Modifier.padding(vertical = 12.dp))
+                        Divider(
+                            color = TextSecondary.copy(alpha = 0.2f),
+                            thickness = 1.dp,
+                            modifier = Modifier.padding(vertical = 12.dp)
+                        )
                         InfoRow(
                             icon = Icons.Default.Info,
                             label = "CPF",
-                            value = "***.123.456-**"
+                            value = conta?.cpf ?: "Não informado"
                         )
-                        Divider(color = TextSecondary.copy(alpha = 0.2f), thickness = 1.dp, modifier = Modifier.padding(vertical = 12.dp))
+                        Divider(
+                            color = TextSecondary.copy(alpha = 0.2f),
+                            thickness = 1.dp,
+                            modifier = Modifier.padding(vertical = 12.dp)
+                        )
                         InfoRow(
                             icon = Icons.Default.Pin,
                             label = "Agência",
                             value = conta?.agencia ?: "Erro ao carregar agência"
                         )
-                        Divider(color = TextSecondary.copy(alpha = 0.2f), thickness = 1.dp, modifier = Modifier.padding(vertical = 12.dp))
+                        Divider(
+                            color = TextSecondary.copy(alpha = 0.2f),
+                            thickness = 1.dp,
+                            modifier = Modifier.padding(vertical = 12.dp)
+                        )
                         InfoRow(
                             icon = Icons.Default.Info,
                             label = "Conta",
@@ -165,7 +194,62 @@ fun PerfilScreen(
             }
         }
     }
+
+    if (showEditDialog) {
+        EditNameDialog(
+            currentName = conta?.nome ?: "",
+            onDismiss = { showEditDialog = false },
+            onConfirm = { novoNome ->
+                onUpdateNome(novoNome)
+                showEditDialog = false
+            }
+        )
+    }
 }
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun EditNameDialog(
+    currentName: String,
+    onDismiss: () -> Unit,
+    onConfirm: (String) -> Unit
+) {
+    var text by remember { mutableStateOf(currentName) }
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text("Editar Nome", color = TextPrimary) },
+        text = {
+            OutlinedTextField(
+                value = text,
+                onValueChange = { text = it },
+                label = { Text("Novo nome") },
+                singleLine = true,
+                colors = TextFieldDefaults.colors(
+                    focusedTextColor = TextPrimary,
+                    unfocusedTextColor = TextPrimary,
+                    cursorColor = LightBlue,
+                    focusedIndicatorColor = LightBlue,
+                    unfocusedIndicatorColor = TextSecondary,
+                    focusedLabelColor = LightBlue,
+                    unfocusedLabelColor = TextSecondary,
+                )
+            )
+        },
+        confirmButton = {
+            TextButton(onClick = { onConfirm(text) }) {
+                Text("Salvar", color = LightBlue)
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text("Cancelar", color = TextSecondary)
+            }
+        },
+        containerColor = CardBackground
+    )
+}
+
 
 @Composable
 private fun InfoRow(icon: ImageVector, label: String, value: String) {
@@ -178,9 +262,9 @@ private fun InfoRow(icon: ImageVector, label: String, value: String) {
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            Icon(icon, null, tint = TextSecondary) //
-            Text(label, color = TextSecondary, fontSize = 14.sp) //
+            Icon(icon, null, tint = TextSecondary)
+            Text(label, color = TextSecondary, fontSize = 14.sp)
         }
-        Text(value, color = TextPrimary, fontSize = 14.sp, fontWeight = FontWeight.SemiBold) //
+        Text(value, color = TextPrimary, fontSize = 14.sp, fontWeight = FontWeight.SemiBold)
     }
 }

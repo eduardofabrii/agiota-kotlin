@@ -12,6 +12,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavType
@@ -28,6 +31,8 @@ import com.agiotabank.screen.PerfilScreen
 import com.agiotabank.screen.SignInScreen
 import com.agiotabank.screen.TransacaoScreen
 import com.agiotabank.ui.ContaViewModel
+import com.agiotabank.ui.TransacaoViewModel
+import kotlinx.coroutines.launch
 
 enum class Telas {
     SIGNIN, LOGIN, HOME, TRANSACAO, EMPRESTIMO, CARTOES, HISTORICO, PERFIL
@@ -38,6 +43,8 @@ fun Navegador() {
     val nav = rememberNavController()
     val contaVm: ContaViewModel = hiltViewModel()
     val conta by contaVm.contaLogada.collectAsState(initial = null)
+    val transacaoVm: TransacaoViewModel = hiltViewModel()
+    val coroutineScope = rememberCoroutineScope()
 
     NavHost(
         modifier = Modifier
@@ -49,7 +56,10 @@ fun Navegador() {
         composable(Telas.SIGNIN.name) {
             SignInScreen(
                 onSignIn = { nav.navigate(Telas.LOGIN.name) },
-                onCreateAccount = { nome, email, senha -> contaVm.criar(nome, email, senha) })
+
+                onCreateAccount = { nome, email, senha, cpf, telefone ->
+                    contaVm.criar(nome, email, senha, cpf, telefone)
+                })
         }
         composable(Telas.LOGIN.name) {
             LoginScreen(onLogin = { email, senha ->
@@ -63,6 +73,7 @@ fun Navegador() {
                 onNavigate = { tela ->
                     val route = when (tela) {
                         Telas.CARTOES -> "${Telas.CARTOES.name}/${conta?.id ?: 0L}"
+                        Telas.TRANSACAO -> "${Telas.TRANSACAO.name}/${conta?.id}"
                         else -> tela.name
                     }
                     nav.navigate(route)
@@ -70,7 +81,43 @@ fun Navegador() {
                 bottomBar = ({
                     BottomBar(telaAtual = Telas.HOME, onTelaSelecionada = { nav.navigate(it.name) })
                 }),
-                nome = conta?.nome ?: ""
+                nome = conta?.nome ?: "",
+                conta = conta
+            )
+        }
+
+        composable(Telas.PERFIL.name) {
+            PerfilScreen(
+                onSair = {
+                    coroutineScope.launch {
+                        contaVm.logout()
+                        nav.navigate(Telas.LOGIN.name) {
+                            popUpTo(Telas.HOME.name) {
+                                inclusive = true
+                            }
+                        }
+                    }
+                },
+                goBack = { nav.popBackStack() },
+                conta = conta,
+                onUpdateNome = { novoNome ->
+                    contaVm.updateNome(novoNome)
+                }
+            )
+        }
+
+        composable(
+            route = "${Telas.TRANSACAO.name}/{contaId}",
+            arguments = listOf(navArgument("contaId") {
+                type = NavType.LongType
+                defaultValue = 0L
+            })
+        ) {
+            TransacaoScreen(
+                goBack = { nav.popBackStack() },
+                conta = conta,
+                viewModel = transacaoVm,
+                contaViewModel = contaVm
             )
         }
         composable(Telas.TRANSACAO.name) { TransacaoScreen(goBack = { nav.popBackStack() }) }
@@ -86,7 +133,6 @@ fun Navegador() {
         }
         composable(Telas.EMPRESTIMO.name) { EmprestimoScreen { nav.popBackStack() } }
         composable(Telas.HISTORICO.name) { HistoricoScreen(goBack = { nav.popBackStack() }) }
-        composable(Telas.PERFIL.name) { PerfilScreen(onSair = {nav.navigate(Telas.LOGIN.name)}, goBack = { nav.popBackStack() }, conta = conta) }
     }
 }
 

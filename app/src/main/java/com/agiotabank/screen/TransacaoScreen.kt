@@ -1,5 +1,6 @@
 package com.agiotabank.screen
 
+import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -38,15 +39,19 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarColors
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -60,16 +65,34 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.agiotabank.data.Conta
+import com.agiotabank.ui.ContaViewModel
+import com.agiotabank.ui.TransacaoViewModel
 import com.agiotabank.ui.theme.AgiotaBankTheme
 import com.agiotabank.ui.theme.LightBlue
+import com.agiotabank.ui.theme.TextPrimary
 import com.agiotabank.ui.theme.TextSecondary
+import kotlinx.coroutines.launch
 import java.text.DecimalFormat
 import kotlin.math.pow
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TransacaoScreen(goBack: () -> Unit = {}) {
+fun TransacaoScreen(
+    goBack: () -> Unit = {},
+    conta: Conta?,
+    viewModel: TransacaoViewModel,
+    contaViewModel: ContaViewModel,
+    ) {
+    conta?.let { Log.d("TransacaoScreen", "Conta: $it") } ?: Log.d("TransacaoScreen", "Conta: null")
     var etapa by remember { mutableStateOf(1) }
+    var valor by remember { mutableStateOf("") }
+    var paraConta by remember { mutableStateOf("") }
+    var agencia by remember { mutableStateOf("") }
+    var contaDestino by remember { mutableStateOf<Conta?>(null) }
+    val snackbarHostState = remember { SnackbarHostState() }
+    val scope = rememberCoroutineScope()
     fun voltar() {
         if (etapa > 1) {
             etapa--
@@ -77,11 +100,39 @@ fun TransacaoScreen(goBack: () -> Unit = {}) {
             goBack()
         }
     }
+
     fun avancar() {
-        if (etapa < 3) {
-            etapa++
+        scope.launch {
+            if (etapa == 1) {
+                val contaEncontrada = contaViewModel.findContaByAgenciaAndNumero(agencia, paraConta)
+                if (contaEncontrada != null) {
+                    contaDestino = contaEncontrada
+                    etapa++
+                } else {
+                    snackbarHostState.showSnackbar("Conta de destino não encontrada")
+                }
+            } else if (etapa == 2 && valor.isEmpty() || valor.toDoubleOrNull() == null || valor.toDouble() / 100.0 <= 0.0
+                || valor.toDouble() / 100.0 > (conta?.saldo ?: 0.0)
+            ) {
+                val message = if (valor.toDouble() > (conta?.saldo ?: 0.0)) { "Saldo Insuficiente" } else { "Valor Inválido"}
+                snackbarHostState.showSnackbar(message)
+            } else if (etapa < 3) {
+                etapa++
+            } else {
+                conta?.let { de ->
+                    contaDestino?.let { para ->
+                        viewModel.realizarTransacao(de, para, valor.toDouble() / 100.0)
+                        goBack()
+                    } ?: run {
+                        scope.launch { snackbarHostState.showSnackbar("Destinatário inválido") }
+                    }
+                } ?: run {
+                    scope.launch { snackbarHostState.showSnackbar("Conta logada não encontrada") }
+                }
+            }
         }
     }
+
     BackHandler {
         voltar()
     }
@@ -94,6 +145,7 @@ fun TransacaoScreen(goBack: () -> Unit = {}) {
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background),
+        snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
             TopAppBar(
                 title = { Text("Transação") },
@@ -127,10 +179,15 @@ fun TransacaoScreen(goBack: () -> Unit = {}) {
                             .padding(2.dp),
                         contentAlignment = Alignment.Center
                     ) {
-                        Text("C", fontWeight = FontWeight.Bold)
+                        Text(
+                            conta?.nome?.firstOrNull()?.toString() ?: "C",
+
+                            )
                     }
                 },
-                modifier = Modifier.fillMaxWidth().padding(horizontal = 12.dp)
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 12.dp)
             )
         },
         bottomBar = {
@@ -140,16 +197,16 @@ fun TransacaoScreen(goBack: () -> Unit = {}) {
                     .padding(20.dp),
                 containerColor = MaterialTheme.colorScheme.background
             ) {
-                    Button(
-                        onClick = { avancar() },
-                        shape = RoundedCornerShape(12.dp),
-                        enabled = isButtonEnabled,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(50.dp),
-                    ) {
-                        Text("Continuar", fontSize = 18.sp)
-                    }
+                Button(
+                    onClick = { avancar() },
+                    shape = RoundedCornerShape(12.dp),
+                    enabled = isButtonEnabled,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(50.dp),
+                ) {
+                    Text(if (etapa == 3) "Confirmar" else "Continuar", fontSize = 18.sp)
+                }
             }
         }) { paddingValues ->
         val options = mapOf(
@@ -160,9 +217,7 @@ fun TransacaoScreen(goBack: () -> Unit = {}) {
         var selected by remember { mutableStateOf(options.keys.first()) }
         val tipos = listOf("Conta Corrente", "Conta Poupança")
         var tipo by remember { mutableStateOf("") }
-        var agencia by remember { mutableStateOf("") }
-        var conta by remember { mutableStateOf("") }
-        var valor by remember { mutableStateOf("") }
+
         when (etapa) {
             1 -> Etapa1(
                 paddingValues = paddingValues,
@@ -174,13 +229,30 @@ fun TransacaoScreen(goBack: () -> Unit = {}) {
                 onTipoSelected = { tipo = it },
                 agencia = agencia,
                 onAgenciaChange = { agencia = it },
-                conta = conta,
-                onContaChange = { conta = it },
+                conta = paraConta,
+                onContaChange = { paraConta = it },
                 toggleButton = { toggleButton(it) }
             )
 
-            2 -> Etapa2(paddingValues = paddingValues, valor = valor, onValorChange = { valor = it }, toggleButton = { toggleButton(it) })
-            3 -> Etapa3(paddingValues = paddingValues)
+            2 -> Etapa2(
+                paddingValues = paddingValues,
+                valor = valor,
+                onValorChange = { valor = it },
+                toggleButton = { toggleButton(it) },
+                saldoDisponivel = conta?.saldo
+            )
+
+            3 -> Etapa3(
+                paddingValues = paddingValues,
+                banco = selected,
+                codigoBanco = options[selected],
+                tipoConta = tipo,
+                agencia = agencia,
+                conta = paraConta,
+                valor = valor,
+                destinatario = contaDestino?.nome ?: ""
+            )
+
             else -> {}
 
         }
@@ -341,7 +413,13 @@ private fun Etapa1(
 }
 
 @Composable
-fun Etapa2(paddingValues: PaddingValues, valor: String, onValorChange: (String) -> Unit, toggleButton: (Boolean) -> Unit = {}) {
+fun Etapa2(
+    paddingValues: PaddingValues,
+    valor: String,
+    onValorChange: (String) -> Unit,
+    toggleButton: (Boolean) -> Unit = {},
+    saldoDisponivel: Double?
+) {
     DisposableEffect(valor) {
         if (valor.isNotEmpty() && valor.toDouble() > 0) {
             toggleButton(true)
@@ -349,7 +427,6 @@ fun Etapa2(paddingValues: PaddingValues, valor: String, onValorChange: (String) 
             toggleButton(false)
         }
         onDispose {
-            toggleButton(false)
         }
     }
     Column(
@@ -364,13 +441,16 @@ fun Etapa2(paddingValues: PaddingValues, valor: String, onValorChange: (String) 
             Spacer(Modifier.height(4.dp))
             Row(verticalAlignment = Alignment.CenterVertically) {
                 var isHidden by remember { mutableStateOf(false) }
+                val saldoFormatado = remember(saldoDisponivel) {
+                    saldoDisponivel?.let { DecimalFormat("R$ #,##0.00").format(it) } ?: "R$ ----,--"
+                }
                 if (isHidden) {
                     Text(
                         "R$ ----,--", fontSize = 28.sp, fontWeight = FontWeight.SemiBold
                     )
                 } else {
                     Text(
-                        "R$ 3.363,32", fontSize = 28.sp, fontWeight = FontWeight.SemiBold
+                        saldoFormatado, fontSize = 28.sp, fontWeight = FontWeight.SemiBold
                     )
                 }
                 Spacer(Modifier.width(12.dp))
@@ -394,7 +474,7 @@ fun Etapa2(paddingValues: PaddingValues, valor: String, onValorChange: (String) 
         ) {
             OutlinedTextField(
                 value = valor,
-                onValueChange = { onValorChange(it.filter {ch -> ch.isDigit()}.take(12)) },
+                onValueChange = { onValorChange(it.filter { ch -> ch.isDigit() }.take(12)) },
                 label = { Text("Valor") },
                 modifier = Modifier
                     .fillMaxWidth()
@@ -409,7 +489,32 @@ fun Etapa2(paddingValues: PaddingValues, valor: String, onValorChange: (String) 
 }
 
 @Composable
-fun Etapa3(paddingValues: PaddingValues) {
+fun Etapa3(
+    paddingValues: PaddingValues,
+    banco: String,
+    codigoBanco: String?,
+    tipoConta: String,
+    agencia: String,
+    conta: String,
+    valor: String,
+    destinatario: String
+) {
+    val valorFormatado = remember(valor) {
+        val cleanValue = valor.filter { it.isDigit() }
+        if (cleanValue.isEmpty()) {
+            "R$ 0,00"
+        } else {
+            val valueDouble = cleanValue.toLong() / 100.0
+            DecimalFormat("R$ #,##0.00").format(valueDouble)
+        }
+    }
+    val contaFormatada = remember(conta) {
+        if (conta.length > 1) {
+            "${conta.dropLast(1)}-${conta.last()}"
+        } else {
+            conta
+        }
+    }
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -429,11 +534,12 @@ fun Etapa3(paddingValues: PaddingValues) {
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 Text("Confirmação", fontWeight = FontWeight.Bold, fontSize = 18.sp)
-                Text("Banco: Agibank S.A. - 019")
-                Text("Tipo de conta: Conta Corrente")
-                Text("Agência: 1234")
-                Text("Conta: 123456-7")
-                Text("Valor: R$ 1.234,56")
+                Text("Nome do destinatário: $destinatario", fontWeight = FontWeight.SemiBold)
+                Text("Banco: $banco - $codigoBanco")
+                Text("Tipo de conta: $tipoConta")
+                Text("Agência: $agencia")
+                Text("Conta: $contaFormatada")
+                Text("Valor: $valorFormatado", fontWeight = FontWeight.SemiBold)
             }
         }
     }
@@ -443,7 +549,8 @@ fun Etapa3(paddingValues: PaddingValues) {
 @Composable
 fun TransacaoScreenPreview() {
     AgiotaBankTheme(darkTheme = true, dynamicColor = false) {
-        TransacaoScreen()
+        TransacaoScreen(conta = null, viewModel = hiltViewModel(), contaViewModel = hiltViewModel())
+
     }
 }
 
