@@ -60,15 +60,21 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.agiotabank.data.Conta
 import com.agiotabank.ui.theme.AgiotaBankTheme
 import com.agiotabank.ui.theme.LightBlue
+import com.agiotabank.ui.theme.TextPrimary
 import com.agiotabank.ui.theme.TextSecondary
 import java.text.DecimalFormat
 import kotlin.math.pow
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TransacaoScreen(goBack: () -> Unit = {}) {
+fun TransacaoScreen(
+    goBack: () -> Unit = {},
+    conta: Conta?,
+
+    ) {
     var etapa by remember { mutableStateOf(1) }
     fun voltar() {
         if (etapa > 1) {
@@ -127,7 +133,10 @@ fun TransacaoScreen(goBack: () -> Unit = {}) {
                             .padding(2.dp),
                         contentAlignment = Alignment.Center
                     ) {
-                        Text("C", fontWeight = FontWeight.Bold)
+                        Text(
+                            conta?.nome?.firstOrNull()?.toString() ?: "C",
+
+                        )
                     }
                 },
                 modifier = Modifier.fillMaxWidth().padding(horizontal = 12.dp)
@@ -443,7 +452,8 @@ fun Etapa3(paddingValues: PaddingValues) {
 @Composable
 fun TransacaoScreenPreview() {
     AgiotaBankTheme(darkTheme = true, dynamicColor = false) {
-        TransacaoScreen()
+        TransacaoScreen(conta = null)
+
     }
 }
 

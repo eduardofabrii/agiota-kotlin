@@ -83,11 +83,15 @@ fun Navegador() {
             )
         }
 
-        composable(Telas.TRANSACAO.name) { TransacaoScreen(goBack = { nav.popBackStack() }) }
+        composable(Telas.TRANSACAO.name) {
+            TransacaoScreen(
+                goBack = { nav.popBackStack() },
+                conta = conta
+            )
+        }
         composable(Telas.CARTOES.name) { CardScreen { nav.popBackStack() } }
         composable(Telas.EMPRESTIMO.name) { EmprestimoScreen { nav.popBackStack() } }
         composable(Telas.HISTORICO.name) { HistoricoScreen(goBack = { nav.popBackStack() }) }
-        composable(Telas.PERFIL.name) { PerfilScreen(onSair = {nav.navigate(Telas.LOGIN.name)}, goBack = { nav.popBackStack() }, conta = conta) }
     }
 }
 
