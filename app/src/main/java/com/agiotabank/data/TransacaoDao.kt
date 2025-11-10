@@ -12,4 +12,7 @@ interface TransacaoDao {
 
     @Query("SELECT * FROM transacoes WHERE deContaId = :contaId OR paraContaId = :contaId")
     fun getByContaId(contaId: Long): Flow<List<Transacao>>
+
+    @Query("SELECT * FROM transacoes")
+    fun getAll(): Flow<List<Transacao>>
 }

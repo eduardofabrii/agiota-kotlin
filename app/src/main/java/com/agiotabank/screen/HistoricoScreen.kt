@@ -1,7 +1,15 @@
 package com.agiotabank.screen
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
@@ -9,12 +17,16 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.Notifications
-import androidx.compose.material.icons.filled.Payments
-import androidx.compose.material.icons.filled.QrCode
-import androidx.compose.material.icons.filled.Receipt
 import androidx.compose.material.icons.filled.SwapHoriz
-import androidx.compose.material3.*
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.produceState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -22,16 +34,28 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.agiotabank.data.Transacao
+import com.agiotabank.ui.ContaViewModel
+import com.agiotabank.ui.TransacaoViewModel
 import com.agiotabank.ui.theme.CardBackground
 import com.agiotabank.ui.theme.DarkBackground
 import com.agiotabank.ui.theme.Green
 import com.agiotabank.ui.theme.LightBlue
+import com.agiotabank.ui.theme.Red
 import com.agiotabank.ui.theme.TextPrimary
 import com.agiotabank.ui.theme.TextSecondary
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 @Preview
 @Composable
-fun HistoricoScreen(goBack: () -> Unit = {})  {
+fun HistoricoScreen(goBack: () -> Unit = {}) {
+    val viewModel: TransacaoViewModel = hiltViewModel()
+    val contaViewModel: ContaViewModel = hiltViewModel()
+    val idConta by contaViewModel.contaId.collectAsState()
+    val transacoes by viewModel.transacoes.collectAsState()
 
     Scaffold(
         modifier = Modifier
@@ -82,48 +106,51 @@ fun HistoricoScreen(goBack: () -> Unit = {})  {
             contentPadding = PaddingValues(horizontal = 20.dp, vertical = 16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-//            items(mockedTransactions) { transacao ->
-//                TransactionItem(transacao = transacao)
-//            }
+            items(transacoes) { transacao ->
+                TransactionItem(transacao = transacao, contaId = idConta ?: 0, contaViewModel = contaViewModel)
+            }
         }
     }
 }
 
-//@Composable
-//private fun TransactionItem(transacao: Transacao) {
-//    Row(
-//        Modifier.fillMaxWidth(),
-//        Arrangement.SpaceBetween,
-//        Alignment.CenterVertically
-//    ) {
-//        Row(
-//            horizontalArrangement = Arrangement.spacedBy(12.dp),
-//            verticalAlignment = Alignment.CenterVertically
-//        ) {
-//            Surface(Modifier.size(40.dp), CircleShape, color = CardBackground) {
-//                Box(contentAlignment = Alignment.Center) {
-//                    Icon(
-//                        when {
-//                            transacao.descricao.contains("Pix") -> Icons.Filled.QrCode
-//                            transacao.descricao.contains("boleto") || transacao.descricao.contains("Conta") -> Icons.Filled.Receipt
-//                            transacao.descricao.contains("Transferência") -> Icons.Filled.SwapHoriz
-//                            else -> Icons.Filled.Payments
-//                        },
-//                        null, tint = if (transacao.valor.startsWith("+")) Green else TextPrimary,
-//                        modifier = Modifier.size(20.dp)
-//                    )
-//                }
-//            }
-//            Column {
-//                Text(transacao.descricao, color = TextPrimary, fontSize = 14.sp, maxLines = 1)
-//                Text(transacao.data, color = TextSecondary, fontSize = 12.sp)
-//            }
-//        }
-//        Text(
-//            transacao.valor,
-//            color = if (transacao.valor.startsWith("+")) Green else TextPrimary,
-//            fontSize = 15.sp,
-//            fontWeight = FontWeight.Medium
-//        )
-//    }
-//}
+@Composable
+private fun TransactionItem(transacao: Transacao, contaId: Long, contaViewModel: ContaViewModel = hiltViewModel()) {
+    val simpleDateFormat = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault())
+    val data = simpleDateFormat.format(Date(transacao.timestamp))
+    Row(
+        Modifier.fillMaxWidth(),
+        Arrangement.SpaceBetween,
+        Alignment.CenterVertically
+    ) {
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Surface(Modifier.size(40.dp), CircleShape, color = CardBackground) {
+                Box(contentAlignment = Alignment.Center) {
+                    Icon(
+                        Icons.Filled.SwapHoriz,
+                        null, tint = TextPrimary,
+                        modifier = Modifier.size(20.dp)
+                    )
+                }
+            }
+            Column {
+                val destinoConta by produceState(initialValue = null as com.agiotabank.data.Conta?, key1 = transacao.paraContaId) {
+                    value = contaViewModel.findContaById(transacao.paraContaId)
+                }
+                val origemConta by produceState(initialValue = null as com.agiotabank.data.Conta?, key1 = transacao.deContaId) {
+                    value = contaViewModel.findContaById(transacao.deContaId)
+                }
+                Text(if (transacao.deContaId == contaId) "Para ${destinoConta?.nome}" else "De ${origemConta?.nome}", fontSize = 14.sp, maxLines = 1)
+                Text(data, color = TextSecondary, fontSize = 12.sp)
+            }
+        }
+        Text(
+            "R$ %.2f".format(transacao.valor),
+            color = if (transacao.deContaId == contaId) Red else Green,
+            fontSize = 15.sp,
+            fontWeight = FontWeight.Medium
+        )
+    }
+}

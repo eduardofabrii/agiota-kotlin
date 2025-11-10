@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -24,10 +25,12 @@ import androidx.compose.material.icons.filled.CreditCard
 import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.MoreHoriz
 import androidx.compose.material.icons.filled.Notifications
+import androidx.compose.material.icons.filled.Payments
 import androidx.compose.material.icons.filled.PictureAsPdf
 import androidx.compose.material.icons.filled.QrCode
 import androidx.compose.material.icons.filled.Receipt
 import androidx.compose.material.icons.filled.Savings
+import androidx.compose.material.icons.filled.SwapHoriz
 import androidx.compose.material.icons.filled.TrendingUp
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material3.Card
@@ -37,11 +40,15 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.produceState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -49,14 +56,23 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.agiotabank.components.Telas
 import com.agiotabank.ui.theme.CardBackground
 import com.agiotabank.ui.theme.LightBlue
 import com.agiotabank.ui.theme.TextPrimary
 import com.agiotabank.ui.theme.TextSecondary
 import com.agiotabank.data.Conta
+import com.agiotabank.ui.ContaViewModel
+import com.agiotabank.ui.TransacaoViewModel
+import com.agiotabank.ui.theme.Green
 import com.agiotabank.ui.theme.LightBlue
+import com.agiotabank.ui.theme.Red
 import com.agiotabank.ui.theme.TextPrimary
+import java.text.NumberFormat
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -66,6 +82,10 @@ fun HomeScreen(
     nome: String,
     conta: Conta?
 ) {
+    val transacaoViewModel: TransacaoViewModel = hiltViewModel()
+    val contaViewModel: ContaViewModel = hiltViewModel()
+    val transacoes by transacaoViewModel.transacoes.collectAsState()
+    val transacoesRecentes = transacoes.take(5)
     Scaffold(
         topBar = {
             TopAppBar(
@@ -130,7 +150,7 @@ fun HomeScreen(
                     Text("Saldo disponível", color = TextSecondary, fontSize = 14.sp)
                     Spacer(Modifier.height(4.dp))
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        Text("R$ 3.363,32", fontSize = 28.sp, fontWeight = FontWeight.SemiBold)
+                        Text(formatarMoeda(conta?.saldo), fontSize = 28.sp, fontWeight = FontWeight.SemiBold)
                         Spacer(Modifier.width(12.dp))
                         IconButton(onClick = { }, modifier = Modifier.size(24.dp)) {
                             Icon(
@@ -212,6 +232,8 @@ fun HomeScreen(
                 }
             }
 
+
+
             // RF-007: Extrato recente
             item {
                 Row(Modifier.fillMaxWidth(), Arrangement.SpaceBetween, Alignment.CenterVertically) {
@@ -233,14 +255,9 @@ fun HomeScreen(
                 }
             }
 
-            /*items(
-                listOf(
-                    Transacao("Pix recebido de João Silva", "+R$ 250,00", "Hoje, 14:32"),
-                    Transacao("Pagamento de boleto - Conta de luz", "-R$ 120,00", "Ontem, 09:15"),
-                    Transacao("Transferência para Maria Santos", "-R$ 340,00", "05/10, 16:22"),
-                    Transacao("Pix recebido de Pedro Costa", "+R$ 90,00", "04/10, 11:05"),
-                    Transacao("Pagamento recorrente - Internet", "-R$ 99,90", "03/10, 08:00")
-                )
+            items(
+                transacoes,
+                key = { it.id }
             ) { t ->
                 Row(
                     Modifier
@@ -255,32 +272,34 @@ fun HomeScreen(
                     ) {
                         Surface(Modifier.size(40.dp), CircleShape) {
                             Box(contentAlignment = Alignment.Center) {
-                                Icon(
-                                    when {
-                                        t.descricao.contains("Pix") -> Icons.Filled.QrCode
-                                        t.descricao.contains("boleto") -> Icons.Filled.Receipt
-                                        t.descricao.contains("Transferência") -> Icons.Filled.SwapHoriz
-                                        else -> Icons.Filled.Payments
-                                    },
+                                Icon(Icons.Filled.SwapHoriz,
                                     null,
-                                    tint = if (t.valor.startsWith("+")) Green else TextPrimary,
+                                    tint = if (t.deContaId == conta?.id) Red else Green,
                                     modifier = Modifier.size(20.dp)
                                 )
                             }
                         }
                         Column {
-                            Text(t.descricao, fontSize = 14.sp, maxLines = 1)
-                            Text(t.data, fontSize = 12.sp)
+                            val destinoConta by produceState(initialValue = null as com.agiotabank.data.Conta?, key1 = t.paraContaId) {
+                                value = contaViewModel.findContaById(t.paraContaId)
+                            }
+                            val origemConta by produceState(initialValue = null as com.agiotabank.data.Conta?, key1 = t.deContaId) {
+                                value = contaViewModel.findContaById(t.deContaId)
+                            }
+                            val simpleDateFormat = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault())
+                            val data = simpleDateFormat.format(Date(t.timestamp))
+                            Text(if (t.deContaId == conta?.id) "Para ${destinoConta?.nome}" else "De ${origemConta?.nome}", fontSize = 14.sp, maxLines = 1)
+                            Text(data, fontSize = 12.sp)
                         }
                     }
                     Text(
-                        t.valor,
-                        color = if (t.valor.startsWith("+")) Green else TextPrimary,
+                        formatarMoeda(t.valor),
+                        color = if (t.deContaId == conta?.id) Red else Green,
                         fontSize = 15.sp,
                         fontWeight = FontWeight.Medium
                     )
                 }
-            }*/
+            }
         }
     }
 }
@@ -317,4 +336,9 @@ private fun SmallCard(
             Text(value, fontSize = 16.sp, fontWeight = FontWeight.SemiBold)
         }
     }
+}
+
+fun formatarMoeda(valor: Double?): String {
+    val nf = NumberFormat.getCurrencyInstance(Locale("pt", "BR"))
+    return nf.format(valor ?: 0.0)
 }
