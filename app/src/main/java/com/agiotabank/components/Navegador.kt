@@ -120,7 +120,6 @@ fun Navegador() {
                 contaViewModel = contaVm
             )
         }
-        composable(Telas.TRANSACAO.name) { TransacaoScreen(goBack = { nav.popBackStack() }) }
         composable(
             route = "${Telas.CARTOES.name}/{contaId}",
             arguments = listOf(navArgument("contaId") { type = NavType.LongType })
