@@ -176,6 +176,9 @@ fun HomeScreen(
                         onClick = { onNavigate(Telas.PIX) }
                     )
                     ActionButton(Icons.Filled.Receipt, "Boletos")  // RF-012
+                    ActionButton(Icons.Filled.QrCode, "PIX",
+                        onClick = {onNavigate(Telas.PIX)})  // RF-010, RF-022
+                    ActionButton(Icons.Filled.Savings, "Meus Empréstimos", onClick = { onNavigate(Telas.MEUS_EMPRESTIMOS) })
                     ActionButton(Icons.Filled.MoreHoriz, "Mais")
                 }
             }
@@ -231,7 +234,7 @@ fun HomeScreen(
                         "Até R$ 5.000",
                         Modifier
                             .weight(1f)
-                            .clickable(onClick = { onNavigate(Telas.EMPRESTIMO) })
+                            .clickable(onClick = { onNavigate(Telas.SOLICITAR_EMPRESTIMO) })
                     )  // RF-016
                 }
             }

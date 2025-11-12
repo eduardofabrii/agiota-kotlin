@@ -41,8 +41,10 @@ class ContaViewModel @Inject constructor(
     }
 
     fun login(email: String, senha: String, onLoginSuccess: () -> Unit) = viewModelScope.launch {
-        repo.login(email, senha)
-        onLoginSuccess()
+        val conta = repo.login(email, senha)
+        if (conta != null) {
+            onLoginSuccess()
+        }
     }
 
     suspend fun findContaByPixKey(chave: String): Conta? {
