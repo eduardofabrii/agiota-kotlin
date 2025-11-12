@@ -47,10 +47,6 @@ class ContaViewModel @Inject constructor(
         }
     }
 
-    suspend fun findContaByPixKey(chave: String): Conta? {
-        return repo.findByPixKey(chave)
-    }
-
     suspend fun findContaByAgenciaAndNumero(agencia: String, numero: String): Conta? {
         return repo.findByAgenciaAndNumero(agencia, numero)
     }

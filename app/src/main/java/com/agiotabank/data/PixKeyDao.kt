@@ -13,4 +13,7 @@ interface PixKeyDao {
 
     @Query("SELECT * FROM pix_keys WHERE contaId = :contaId")
     fun getKeysByContaId(contaId: Long): Flow<List<PixKey>>
+
+    @Query("SELECT * FROM pix_keys WHERE `key` = :chave")
+    fun getPixKeyByChave(chave: String): Flow<PixKey?>
 }

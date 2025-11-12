@@ -28,6 +28,7 @@ import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Payments
 import androidx.compose.material.icons.filled.PictureAsPdf
 import androidx.compose.material.icons.filled.QrCode
+import androidx.compose.material.icons.filled.QrCode2
 import androidx.compose.material.icons.filled.Receipt
 import androidx.compose.material.icons.filled.Savings
 import androidx.compose.material.icons.filled.SwapHoriz
@@ -174,10 +175,10 @@ fun HomeScreen(
                         onClick = { onNavigate(Telas.TRANSACAO) })  // RF-009, RF-010
                     ActionButton(
                         Icons.Filled.QrCode,
-                        "PIX",
-                        onClick = { onNavigate(Telas.PIX) }
+                        "Chaves PIX",
+                        onClick = { onNavigate(Telas.PIXKEY) }
                     )
-                    ActionButton(Icons.Filled.Receipt, "Boletos")  // RF-012
+                    ActionButton(Icons.Filled.QrCode2, "PIX", onClick = { onNavigate(Telas.PIX)})  // RF-012
                     ActionButton(Icons.Filled.Savings, "Empréstimos", onClick = { onNavigate(Telas.MEUS_EMPRESTIMOS) })
                     ActionButton(Icons.Filled.MoreHoriz, "Mais")
                 }

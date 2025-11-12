@@ -63,6 +63,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.agiotabank.data.Conta
 import com.agiotabank.ui.ContaViewModel
+import com.agiotabank.ui.PixKeyViewModel
 import com.agiotabank.ui.TransacaoViewModel
 import com.agiotabank.ui.theme.LightBlue
 import com.agiotabank.ui.theme.TextSecondary
@@ -84,6 +85,7 @@ fun PixScreen(
     conta: Conta?,
     viewModel: TransacaoViewModel,
     contaViewModel: ContaViewModel,
+    pixKeyViewModel: PixKeyViewModel
 ) {
     var etapa by remember { mutableStateOf(1) }
     var valor by remember { mutableStateOf("") }
@@ -107,7 +109,8 @@ fun PixScreen(
         scope.launch {
             if (etapa == 1) {
                 // Etapa 1: Validar chave
-                val contaEncontrada = contaViewModel.findContaByPixKey(chave)
+                val chavePix = pixKeyViewModel.pixKeyByChave(chave)
+                val contaEncontrada = contaViewModel.findContaById(chavePix?.contaId ?: -1L)
                 if (contaEncontrada != null) {
                     if (contaEncontrada.id == conta?.id) {
                         snackbarHostState.showSnackbar("Você não pode enviar um PIX para si mesmo")
@@ -116,15 +119,7 @@ fun PixScreen(
                     contaDestino = contaEncontrada
                     etapa++
                 } else {
-                    // Se não encontrou, simula uma conta externa (não bloqueia a transação)
-                    contaDestino = Conta(
-                        id = -1L, // ID inválido para sabermos que é externo
-                        nome = "Destinatário (Outra Instituição)",
-                        email = "", senha = "", cpf = "", telefone = "",
-                        agencia = "0001", numero = "999999-9"
-                    )
-                    Log.d("PixScreen", "Chave PIX não encontrada localmente, tratando como externa.")
-                    etapa++ // Avança para a etapa de valor
+                    snackbarHostState.showSnackbar("Chave inválida")
                 }
             } else if (etapa == 2) {
                 // Etapa 2: Validar valor

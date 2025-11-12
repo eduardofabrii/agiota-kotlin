@@ -26,9 +26,6 @@ interface ContaDao {
     @Update
     suspend fun update(conta: Conta)
 
-    @Query("SELECT * FROM contas WHERE email = :chave OR cpf = :chave OR telefone = :chave")
-    suspend fun findByPixKey(chave: String): Conta?
-
     @Query("SELECT * FROM contas WHERE agencia = :agencia and numero = :numero")
     suspend fun findByAgenciaAndNumero(agencia: String ,numero: String): Conta?
 

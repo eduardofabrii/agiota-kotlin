@@ -79,10 +79,6 @@ class ContaRepository(
 
     fun getContaById(id: Long): Flow<Conta?> = contaDao.getById(id)
 
-    suspend fun findByPixKey(chave: String): Conta? = withContext(Dispatchers.IO) {
-        contaDao.findByPixKey(chave)
-    }
-
     suspend fun findByAgenciaAndNumero(agencia: String ,numero: String): Conta? = withContext(Dispatchers.IO) {
         contaDao.findByAgenciaAndNumero(agencia, numero)
     }
