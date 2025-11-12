@@ -28,6 +28,7 @@ import com.agiotabank.screen.HistoricoScreen
 import com.agiotabank.screen.HomeScreen
 import com.agiotabank.screen.LoginScreen
 import com.agiotabank.screen.PerfilScreen
+import com.agiotabank.screen.PixScreen
 import com.agiotabank.screen.SignInScreen
 import com.agiotabank.screen.TransacaoScreen
 import com.agiotabank.ui.ContaViewModel
@@ -35,7 +36,7 @@ import com.agiotabank.ui.TransacaoViewModel
 import kotlinx.coroutines.launch
 
 enum class Telas {
-    SIGNIN, LOGIN, HOME, TRANSACAO, EMPRESTIMO, CARTOES, HISTORICO, PERFIL
+    SIGNIN, LOGIN, HOME, TRANSACAO, EMPRESTIMO, CARTOES, HISTORICO, PERFIL, PIX
 }
 
 @Composable
@@ -74,6 +75,7 @@ fun Navegador() {
                     val route = when (tela) {
                         Telas.CARTOES -> "${Telas.CARTOES.name}/${conta?.id ?: 0L}"
                         Telas.TRANSACAO -> "${Telas.TRANSACAO.name}/${conta?.id}"
+                        Telas.PIX -> Telas.PIX.name
                         else -> tela.name
                     }
                     nav.navigate(route)
@@ -85,7 +87,14 @@ fun Navegador() {
                 conta = conta
             )
         }
-
+        composable(Telas.PIX.name) {
+            PixScreen(
+                goBack = { nav.popBackStack() },
+                conta = conta,
+                viewModel = transacaoVm,
+                contaViewModel = contaVm
+            )
+        }
         composable(Telas.PERFIL.name) {
             PerfilScreen(
                 onSair = {
