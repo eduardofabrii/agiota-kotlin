@@ -170,6 +170,12 @@ fun HomeScreen(
                         Icons.Filled.AccountBalance,
                         "Transferir",
                         onClick = { onNavigate(Telas.TRANSACAO) })  // RF-009, RF-010
+                    ActionButton(
+                        Icons.Filled.QrCode,
+                        "PIX",
+                        onClick = { onNavigate(Telas.PIX) }
+                    )
+                    ActionButton(Icons.Filled.Receipt, "Boletos")  // RF-012
                     ActionButton(Icons.Filled.QrCode, "PIX",
                         onClick = {onNavigate(Telas.PIX)})  // RF-010, RF-022
                     ActionButton(Icons.Filled.Savings, "Meus Empréstimos", onClick = { onNavigate(Telas.MEUS_EMPRESTIMOS) })

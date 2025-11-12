@@ -27,6 +27,7 @@ import com.agiotabank.screen.HomeScreen
 import com.agiotabank.screen.LoginScreen
 import com.agiotabank.screen.MeusEmprestimosScreen
 import com.agiotabank.screen.PerfilScreen
+import com.agiotabank.screen.PixScreen
 import com.agiotabank.screen.PixKeyScreen
 import com.agiotabank.screen.SignInScreen
 import com.agiotabank.screen.SolicitarEmprestimoScreen
@@ -75,6 +76,7 @@ fun Navegador() {
                     val route = when (tela) {
                         Telas.CARTOES -> "${Telas.CARTOES.name}/${conta?.id ?: 0L}"
                         Telas.TRANSACAO -> "${Telas.TRANSACAO.name}/${conta?.id}"
+                        Telas.PIX -> Telas.PIX.name
                         else -> tela.name
                     }
                     nav.navigate(route)
@@ -86,7 +88,14 @@ fun Navegador() {
                 conta = conta
             )
         }
-
+        composable(Telas.PIX.name) {
+            PixScreen(
+                goBack = { nav.popBackStack() },
+                conta = conta,
+                viewModel = transacaoVm,
+                contaViewModel = contaVm
+            )
+        }
         composable(Telas.PERFIL.name) {
             PerfilScreen(
                 onSair = {
