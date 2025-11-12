@@ -38,12 +38,13 @@ import com.agiotabank.screen.SignInScreen
 import com.agiotabank.screen.SolicitarEmprestimoScreen
 import com.agiotabank.screen.TransacaoScreen
 import com.agiotabank.ui.ContaViewModel
+import com.agiotabank.ui.PixKeyViewModel
 import com.agiotabank.ui.TransacaoViewModel
 import com.agiotabank.ui.theme.TextPrimary
 import kotlinx.coroutines.launch
 
 enum class Telas {
-    SIGNIN, LOGIN, HOME, TRANSACAO, EMPRESTIMO, CARTOES, HISTORICO, PERFIL, PIX, MEUS_EMPRESTIMOS, SOLICITAR_EMPRESTIMO, INVESTIMENTO, INVESTIMENTO_DETALHE, INVESTIR
+    SIGNIN, LOGIN, HOME, TRANSACAO, EMPRESTIMO, CARTOES, HISTORICO, PERFIL, PIX, MEUS_EMPRESTIMOS, SOLICITAR_EMPRESTIMO, INVESTIMENTO, INVESTIMENTO_DETALHE, INVESTIR, PIXKEY
 }
 
 @Composable
@@ -51,6 +52,7 @@ fun Navegador() {
     val nav = rememberNavController()
     val contaVm: ContaViewModel = hiltViewModel()
     val conta by contaVm.contaLogada.collectAsState(initial = null)
+    val pixKeyvm: PixKeyViewModel = hiltViewModel()
     val transacaoVm: TransacaoViewModel = hiltViewModel()
     val coroutineScope = rememberCoroutineScope()
 
@@ -100,7 +102,8 @@ fun Navegador() {
                 goBack = { nav.popBackStack() },
                 conta = conta,
                 viewModel = transacaoVm,
-                contaViewModel = contaVm
+                contaViewModel = contaVm,
+                pixKeyViewModel = pixKeyvm
             )
         }
         composable(Telas.PERFIL.name) {
@@ -147,7 +150,7 @@ fun Navegador() {
                 contaId = backStackEntry.arguments?.getLong("contaId") ?: 0L
             )
         }
-        composable(Telas.PIX.name) {
+        composable(Telas.PIXKEY.name) {
             PixKeyScreen(goBack = { nav.popBackStack() })
         }
         composable(Telas.MEUS_EMPRESTIMOS.name) { MeusEmprestimosScreen(goBack = { nav.popBackStack() }) }
