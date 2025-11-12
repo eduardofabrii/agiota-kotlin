@@ -103,28 +103,30 @@ fun HomeScreen(
                     actionIconContentColor = MaterialTheme.colorScheme.onBackground
                 ),
                 actions = {
-                    IconButton(onClick = { /* RF-020: Alertas */ }) {
-                        Icon(Icons.Filled.Notifications, contentDescription = "Alertas")
-                    }
-                    IconButton(onClick = { /* RF-019: Histórico de acessos */ }) {
-                        Icon(Icons.Filled.History, contentDescription = "Histórico")
-                    }
-                    Box(
-                        Modifier
-                            .padding(bottom = 20.dp)
-                            .size(32.dp)
-                            .clip(CircleShape)
-                            .background(LightBlue)
-                            .padding(2.dp)
-                            .clickable(onClick = { onNavigate(Telas.PERFIL) }),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text(
-                            conta?.nome?.firstOrNull()?.toString() ?: "C",
-                            color = TextPrimary,
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 16.sp
-                        )
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        IconButton(onClick = { /* RF-020: Alertas */ }) {
+                            Icon(Icons.Filled.Notifications, contentDescription = "Alertas")
+                        }
+                        IconButton(onClick = { /* RF-019: Histórico de acessos */ }) {
+                            Icon(Icons.Filled.History, contentDescription = "Histórico")
+                        }
+                        Spacer(Modifier.width(8.dp))
+                        Box(
+                            Modifier
+                                .size(32.dp)
+                                .clip(CircleShape)
+                                .background(LightBlue)
+                                .padding(2.dp)
+                                .clickable(onClick = { onNavigate(Telas.PERFIL) }),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                conta?.nome?.firstOrNull()?.toString() ?: "C",
+                                color = TextPrimary,
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 16.sp
+                            )
+                        }
                     }
                 },
                 modifier = Modifier
