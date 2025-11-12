@@ -178,7 +178,7 @@ fun HomeScreen(
                         onClick = { onNavigate(Telas.PIX) }
                     )
                     ActionButton(Icons.Filled.Receipt, "Boletos")  // RF-012
-                    ActionButton(Icons.Filled.Savings, "Meus Empréstimos", onClick = { onNavigate(Telas.MEUS_EMPRESTIMOS) })
+                    ActionButton(Icons.Filled.Savings, "Empréstimos", onClick = { onNavigate(Telas.MEUS_EMPRESTIMOS) })
                     ActionButton(Icons.Filled.MoreHoriz, "Mais")
                 }
             }
@@ -232,7 +232,7 @@ fun HomeScreen(
                     )  // RF-017
                     SmallCard(
                         Icons.Filled.Savings,
-                        "Empréstimo",
+                        "Pedir Empréstimo",
                         "Até R$ 5.000",
                         Modifier
                             .weight(1f)
