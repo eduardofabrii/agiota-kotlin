@@ -8,6 +8,10 @@ import com.agiotabank.data.AppDatabase
 import com.agiotabank.data.CardDao
 import com.agiotabank.data.ContaDao
 import com.agiotabank.data.ContaRepository
+import com.agiotabank.data.EmprestimoDao
+import com.agiotabank.data.EmprestimoRepository
+import com.agiotabank.data.PixKeyDao
+import com.agiotabank.data.PixKeyRepository
 import com.agiotabank.data.TransacaoDao
 import com.agiotabank.data.TransacaoRepository
 import dagger.Module
@@ -38,12 +42,27 @@ object AppModule {
     fun provideCardDao(db: AppDatabase): CardDao = db.cardDao()
 
     @Provides
+    fun providePixKeyDao(db: AppDatabase): PixKeyDao = db.pixKeyDao()
+
+    @Provides
+    fun provideEmprestimoDao(db: AppDatabase): EmprestimoDao = db.emprestimoDao()
+
+    @Provides
     @Singleton
     fun provideContaRepository(dao: ContaDao, dataStore: DataStore<Preferences>): ContaRepository =
         ContaRepository(dao, dataStore)
 
     @Provides
     @Singleton
+    fun providePixKeyRepository(pixKeyDao: PixKeyDao): PixKeyRepository = PixKeyRepository(pixKeyDao)
+
+    @Provides
+    @Singleton
     fun provideTransacaoRepository(transacaoDao: TransacaoDao, contaDao: ContaDao): TransacaoRepository = TransacaoRepository(transacaoDao, contaDao)
+
+    @Provides
+    @Singleton
+    fun provideEmprestimoRepository(emprestimoDao: EmprestimoDao, contaDao: ContaDao): EmprestimoRepository = EmprestimoRepository(emprestimoDao, contaDao)
+
 
 }

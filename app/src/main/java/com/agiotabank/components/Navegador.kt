@@ -12,7 +12,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
@@ -23,19 +22,21 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.agiotabank.screen.CardScreen
-import com.agiotabank.screen.EmprestimoScreen
 import com.agiotabank.screen.HistoricoScreen
 import com.agiotabank.screen.HomeScreen
 import com.agiotabank.screen.LoginScreen
+import com.agiotabank.screen.MeusEmprestimosScreen
 import com.agiotabank.screen.PerfilScreen
+import com.agiotabank.screen.PixKeyScreen
 import com.agiotabank.screen.SignInScreen
+import com.agiotabank.screen.SolicitarEmprestimoScreen
 import com.agiotabank.screen.TransacaoScreen
 import com.agiotabank.ui.ContaViewModel
 import com.agiotabank.ui.TransacaoViewModel
 import kotlinx.coroutines.launch
 
 enum class Telas {
-    SIGNIN, LOGIN, HOME, TRANSACAO, EMPRESTIMO, CARTOES, HISTORICO, PERFIL
+    SIGNIN, LOGIN, HOME, TRANSACAO, EMPRESTIMO, CARTOES, HISTORICO, PERFIL, PIX, MEUS_EMPRESTIMOS, SOLICITAR_EMPRESTIMO
 }
 
 @Composable
@@ -130,7 +131,11 @@ fun Navegador() {
                 contaId = backStackEntry.arguments?.getLong("contaId") ?: 0L
             )
         }
-        composable(Telas.EMPRESTIMO.name) { EmprestimoScreen { nav.popBackStack() } }
+        composable(Telas.PIX.name) {
+            PixKeyScreen(goBack = { nav.popBackStack() })
+        }
+        composable(Telas.MEUS_EMPRESTIMOS.name) { MeusEmprestimosScreen(goBack = { nav.popBackStack() }) }
+        composable(Telas.SOLICITAR_EMPRESTIMO.name) { SolicitarEmprestimoScreen(goBack = { nav.popBackStack()}) }
         composable(Telas.HISTORICO.name) { HistoricoScreen(goBack = { nav.popBackStack() }) }
     }
 }
@@ -144,7 +149,7 @@ fun BottomBar(telaAtual: Telas, onTelaSelecionada: (Telas) -> Unit) {
             onClick = { onTelaSelecionada(Telas.HOME) },
             icon = {
                 Icon(
-                    imageVector = Icons.Filled.Home, // Ícone do pacote material.icons
+                    imageVector = Icons.Filled.Home,
                     contentDescription = "Início"
                 )
             },
