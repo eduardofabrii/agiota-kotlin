@@ -1,6 +1,7 @@
 package com.agiotabank.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
@@ -14,6 +15,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavType
@@ -22,8 +24,11 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.agiotabank.screen.CardScreen
+import com.agiotabank.screen.ComprarInvestimentoScreen
 import com.agiotabank.screen.HistoricoScreen
 import com.agiotabank.screen.HomeScreen
+import com.agiotabank.screen.InvestimentoDetailScreen
+import com.agiotabank.screen.InvestimentoScreen
 import com.agiotabank.screen.LoginScreen
 import com.agiotabank.screen.MeusEmprestimosScreen
 import com.agiotabank.screen.PerfilScreen
@@ -34,10 +39,11 @@ import com.agiotabank.screen.SolicitarEmprestimoScreen
 import com.agiotabank.screen.TransacaoScreen
 import com.agiotabank.ui.ContaViewModel
 import com.agiotabank.ui.TransacaoViewModel
+import com.agiotabank.ui.theme.TextPrimary
 import kotlinx.coroutines.launch
 
 enum class Telas {
-    SIGNIN, LOGIN, HOME, TRANSACAO, EMPRESTIMO, CARTOES, HISTORICO, PERFIL, PIX, MEUS_EMPRESTIMOS, SOLICITAR_EMPRESTIMO
+    SIGNIN, LOGIN, HOME, TRANSACAO, EMPRESTIMO, CARTOES, HISTORICO, PERFIL, PIX, MEUS_EMPRESTIMOS, SOLICITAR_EMPRESTIMO, INVESTIMENTO, INVESTIMENTO_DETALHE, INVESTIR
 }
 
 @Composable
@@ -77,6 +83,7 @@ fun Navegador() {
                         Telas.CARTOES -> "${Telas.CARTOES.name}/${conta?.id ?: 0L}"
                         Telas.TRANSACAO -> "${Telas.TRANSACAO.name}/${conta?.id}"
                         Telas.PIX -> Telas.PIX.name
+                        Telas.INVESTIMENTO -> "${Telas.INVESTIMENTO.name}/${conta?.id}"
                         else -> tela.name
                     }
                     nav.navigate(route)
@@ -146,6 +153,41 @@ fun Navegador() {
         composable(Telas.MEUS_EMPRESTIMOS.name) { MeusEmprestimosScreen(goBack = { nav.popBackStack() }) }
         composable(Telas.SOLICITAR_EMPRESTIMO.name) { SolicitarEmprestimoScreen(goBack = { nav.popBackStack()}) }
         composable(Telas.HISTORICO.name) { HistoricoScreen(goBack = { nav.popBackStack() }) }
+
+        composable(
+            route = "${Telas.INVESTIMENTO.name}/{contaId}",
+            arguments = listOf(navArgument("contaId") {
+                type = NavType.LongType
+                defaultValue = 0L
+            })
+        ) {
+            InvestimentoScreen(
+                onVoltar = { nav.popBackStack() },
+                onNavigateToDetail = { investimentoId ->
+                    nav.navigate("${Telas.INVESTIMENTO_DETALHE.name}/$investimentoId")
+                },
+                onNavigateToInvestir = {
+                    nav.navigate(Telas.INVESTIR.name)
+                }
+            )
+        }
+
+        composable(
+            route = "${Telas.INVESTIMENTO_DETALHE.name}/{investimentoId}",
+            arguments = listOf(navArgument("investimentoId") { type = NavType.LongType })
+        ) { backStackEntry ->
+            val id = backStackEntry.arguments?.getLong("investimentoId") ?: 0L
+            InvestimentoDetailScreen(
+                investimentoId = id,
+                onVoltar = { nav.popBackStack() }
+            )
+        }
+
+        composable(Telas.INVESTIR.name) {
+            ComprarInvestimentoScreen(
+                onVoltar = { nav.popBackStack() }
+            )
+        }
     }
 }
 

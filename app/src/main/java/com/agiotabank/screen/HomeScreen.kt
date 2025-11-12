@@ -225,8 +225,10 @@ fun HomeScreen(
                     SmallCard(
                         Icons.Filled.TrendingUp,
                         "Investimentos",
-                        "R$ 7.800",
-                        Modifier.weight(1f)
+                        "R$ 7.800", // (Este valor ainda é estático)
+                        Modifier
+                            .weight(1f)
+                            .clickable(onClick = { onNavigate(Telas.INVESTIMENTO) }) // <-- ADICIONE AQUI
                     )  // RF-017
                     SmallCard(
                         Icons.Filled.Savings,
